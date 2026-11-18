@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Order Form · Offer Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="order">
+<div class="shell">
+  <aside class="side">
+    <a class="brand" href="index.html"><span class="logo" id="logo" aria-hidden="true">M</span><span id="brandName">Offer Desk</span></a>
+    <nav aria-label="Pages">
+      <a href="orders.html" data-view="orders" data-login="1"><span class="ico" data-icon="package"></span>Orders Dashboard</a>
+      <a href="payments.html" data-view="payments" data-login="1"><span class="ico" data-icon="wallet"></span>Payment Dashboard</a>
+      <a href="index.html" data-view="offers"><span class="ico" data-icon="tag"></span>Deal &amp; Offers</a>
+      <a href="proofs.html" data-view="proofs"><span class="ico" data-icon="image"></span>Proofs Submit</a>
+      <a href="referrals.html" data-view="referrals" data-login="1"><span class="ico" data-icon="users"></span>Referral Earnings</a>
+      <a href="whatsapp.html" data-view="whatsapp"><span class="ico" data-icon="chat"></span>Whatsapp Bot</a>
+      <a href="order.html" data-view="order"><span class="ico" data-icon="doc"></span>Order Form<span class="count num" id="navCount" hidden></span></a>
+      <a href="refund.html" data-view="refund"><span class="ico" data-icon="undo"></span>Refund Form</a>
+      <a href="terms.html" data-view="terms"><span class="ico" data-icon="file"></span>Terms &amp; Conditions</a>
+      <a href="qna.html" data-view="qna"><span class="ico" data-icon="help"></span>QnA</a>
+      <a href="rewards.html" data-view="rewards" data-login="1"><span class="ico" data-icon="trend"></span>Rewards</a>
+      <a href="affiliate.html" data-view="affiliate"><span class="ico" data-icon="share"></span>Affiliate Program</a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="bar">
+      <div>
+        <h1 id="viewTitle">Deals &amp; Offers</h1>
+        <p class="muted" id="viewSub"></p>
+      </div>
+      <p class="who" id="who"></p>
+    </header>
+
+    <!-- Place an order -->
+    <section class="view" id="view-order" data-view="order" hidden>
+      <div id="orderResult" class="result" hidden></div>
+      <div class="desk" id="orderDesk">
+        <form id="orderForm" class="panel">
+          <fieldset>
+            <legend>Items</legend>
+            <div class="items" id="itemList"></div>
+            <p class="hint">Use + and − to set quantities. Offer prices are already applied.</p>
+          </fieldset>
+
+          <fieldset>
+            <legend>Your details</legend>
+            <div class="grid2">
+              <div class="field">
+                <label for="o-name">Full name</label>
+                <input id="o-name" name="name" autocomplete="name" required maxlength="80">
+              </div>
+              <div class="field">
+                <label for="o-phone">Phone</label>
+                <input id="o-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required pattern="[0-9+ \-]{10,15}" title="10 to 15 digits, for example 98765 43210" maxlength="20">
+              </div>
+              <div class="field wide">
+                <label for="o-email">Email <span class="opt">optional</span></label>
+                <input id="o-email" name="email" type="email" autocomplete="email" maxlength="120">
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Delivery</legend>
+            <div class="grid2">
+              <div class="field wide">
+                <label for="o-address">Address</label>
+                <textarea id="o-address" name="address" autocomplete="street-address" required maxlength="300" placeholder="House or flat number, street, area, city"></textarea>
+              </div>
+              <div class="field">
+                <label for="o-pin">PIN code</label>
+                <input id="o-pin" name="pin" inputmode="numeric" autocomplete="postal-code" required pattern="[1-9][0-9]{5}" maxlength="6" title="6 digit PIN code">
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Payment</legend>
+            <div class="choices" role="radiogroup" aria-label="Payment method">
+              <label class="choice" for="pay-cod"><input type="radio" id="pay-cod" name="payment" value="cod" checked> Pay on delivery</label>
+              <label class="choice" for="pay-upi"><input type="radio" id="pay-upi" name="payment" value="upi"> UPI, after we confirm the order</label>
+              <label class="choice" for="pay-bank"><input type="radio" id="pay-bank" name="payment" value="bank"> Bank transfer, after we confirm the order</label>
+            </div>
+            <p class="hint">Nothing is charged on this page. Never share card numbers, passwords or OTPs here.</p>
+          </fieldset>
+
+          <div class="field">
+            <label for="o-notes">Notes <span class="opt">optional</span></label>
+            <textarea id="o-notes" name="notes" maxlength="400" placeholder="Size, colour, delivery instructions"></textarea>
+          </div>
+
+          <div class="field">
+            <label for="o-ref">Referral code <span class="opt">optional</span></label>
+            <input id="o-ref" name="referral" maxlength="30" autocapitalize="characters" autocomplete="off">
+          </div>
+
+          <p class="err" id="orderErr" role="alert"></p>
+          <div class="submitrow">
+            <button class="btn btn-primary" type="submit" id="orderSubmit">Send order</button>
+            <p class="hint" id="sendNote" hidden></p>
+          </div>
+        </form>
+
+        <aside class="panel summary" aria-live="polite" aria-label="Order summary">
+          <h3>Order summary</h3>
+          <div id="sumBody"></div>
+        </aside>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <p>We never ask for card numbers, passwords or OTPs on this page.</p>
+      <p id="contactLine" hidden></p>
+    </footer>
+  </div>
+</div>
+
+
+<script src="app.js"></script>
+</body>
+</html>

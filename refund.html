@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Refund Form · Offer Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="refund">
+<div class="shell">
+  <aside class="side">
+    <a class="brand" href="index.html"><span class="logo" id="logo" aria-hidden="true">M</span><span id="brandName">Offer Desk</span></a>
+    <nav aria-label="Pages">
+      <a href="orders.html" data-view="orders" data-login="1"><span class="ico" data-icon="package"></span>Orders Dashboard</a>
+      <a href="payments.html" data-view="payments" data-login="1"><span class="ico" data-icon="wallet"></span>Payment Dashboard</a>
+      <a href="index.html" data-view="offers"><span class="ico" data-icon="tag"></span>Deal &amp; Offers</a>
+      <a href="proofs.html" data-view="proofs"><span class="ico" data-icon="image"></span>Proofs Submit</a>
+      <a href="referrals.html" data-view="referrals" data-login="1"><span class="ico" data-icon="users"></span>Referral Earnings</a>
+      <a href="whatsapp.html" data-view="whatsapp"><span class="ico" data-icon="chat"></span>Whatsapp Bot</a>
+      <a href="order.html" data-view="order"><span class="ico" data-icon="doc"></span>Order Form<span class="count num" id="navCount" hidden></span></a>
+      <a href="refund.html" data-view="refund"><span class="ico" data-icon="undo"></span>Refund Form</a>
+      <a href="terms.html" data-view="terms"><span class="ico" data-icon="file"></span>Terms &amp; Conditions</a>
+      <a href="qna.html" data-view="qna"><span class="ico" data-icon="help"></span>QnA</a>
+      <a href="rewards.html" data-view="rewards" data-login="1"><span class="ico" data-icon="trend"></span>Rewards</a>
+      <a href="affiliate.html" data-view="affiliate"><span class="ico" data-icon="share"></span>Affiliate Program</a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="bar">
+      <div>
+        <h1 id="viewTitle">Deals &amp; Offers</h1>
+        <p class="muted" id="viewSub"></p>
+      </div>
+      <p class="who" id="who"></p>
+    </header>
+
+    <!-- Refund form -->
+    <section class="view" id="view-refund" data-view="refund" hidden>
+      <div id="refundResult" class="result" hidden></div>
+      <div class="desk" id="refundDesk">
+        <form id="refundForm" class="panel">
+          <fieldset>
+            <legend>Your order</legend>
+            <div class="grid2">
+              <div class="field">
+                <label for="r-order">Order reference</label>
+                <input id="r-order" name="orderRef" required maxlength="40" placeholder="ORD-1A2B3C4D" autocapitalize="characters">
+              </div>
+              <div class="field">
+                <label for="r-contact">Phone or email used on the order</label>
+                <input id="r-contact" name="contact" required maxlength="120" autocomplete="email">
+              </div>
+              <div class="field">
+                <label for="r-name">Full name</label>
+                <input id="r-name" name="name" autocomplete="name" required maxlength="80">
+              </div>
+              <div class="field">
+                <label for="r-item">Item</label>
+                <select id="r-item" name="item" required></select>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>What went wrong</legend>
+            <div class="grid2">
+              <div class="field">
+                <label for="r-reason">Reason</label>
+                <select id="r-reason" name="reason" required>
+                  <option value="" selected disabled>Choose one</option>
+                  <option>Arrived damaged</option>
+                  <option>Wrong item received</option>
+                  <option>Item not as described</option>
+                  <option>Arrived too late</option>
+                  <option>Never arrived</option>
+                  <option>Changed my mind</option>
+                  <option>Something else</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="r-want">You would like</label>
+                <select id="r-want" name="want" required>
+                  <option>A refund</option>
+                  <option>A replacement</option>
+                </select>
+              </div>
+              <div class="field wide">
+                <label for="r-details">Details</label>
+                <textarea id="r-details" name="details" required minlength="10" maxlength="800" placeholder="Tell us what happened, in a few lines"></textarea>
+              </div>
+            </div>
+          </fieldset>
+
+          <p class="err" id="refundErr" role="alert"></p>
+          <div class="submitrow">
+            <button class="btn btn-primary" type="submit" id="refundSubmit">Send refund request</button>
+            <p class="hint" id="sendNote2" hidden></p>
+          </div>
+        </form>
+
+        <aside class="panel summary" aria-label="Before you send">
+          <h3>Before you send</h3>
+          <ul class="tips">
+            <li>Use the reference you received when you placed the order.</li>
+            <li>Each request is reviewed individually, so a clear description helps.</li>
+            <li>One request per item. Send a second request for another item.</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <p>We never ask for card numbers, passwords or OTPs on this page.</p>
+      <p id="contactLine" hidden></p>
+    </footer>
+  </div>
+</div>
+
+
+<script src="app.js"></script>
+</body>
+</html>

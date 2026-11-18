@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Proofs Submit · Offer Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="proofs">
+<div class="shell">
+  <aside class="side">
+    <a class="brand" href="index.html"><span class="logo" id="logo" aria-hidden="true">M</span><span id="brandName">Offer Desk</span></a>
+    <nav aria-label="Pages">
+      <a href="orders.html" data-view="orders" data-login="1"><span class="ico" data-icon="package"></span>Orders Dashboard</a>
+      <a href="payments.html" data-view="payments" data-login="1"><span class="ico" data-icon="wallet"></span>Payment Dashboard</a>
+      <a href="index.html" data-view="offers"><span class="ico" data-icon="tag"></span>Deal &amp; Offers</a>
+      <a href="proofs.html" data-view="proofs"><span class="ico" data-icon="image"></span>Proofs Submit</a>
+      <a href="referrals.html" data-view="referrals" data-login="1"><span class="ico" data-icon="users"></span>Referral Earnings</a>
+      <a href="whatsapp.html" data-view="whatsapp"><span class="ico" data-icon="chat"></span>Whatsapp Bot</a>
+      <a href="order.html" data-view="order"><span class="ico" data-icon="doc"></span>Order Form<span class="count num" id="navCount" hidden></span></a>
+      <a href="refund.html" data-view="refund"><span class="ico" data-icon="undo"></span>Refund Form</a>
+      <a href="terms.html" data-view="terms"><span class="ico" data-icon="file"></span>Terms &amp; Conditions</a>
+      <a href="qna.html" data-view="qna"><span class="ico" data-icon="help"></span>QnA</a>
+      <a href="rewards.html" data-view="rewards" data-login="1"><span class="ico" data-icon="trend"></span>Rewards</a>
+      <a href="affiliate.html" data-view="affiliate"><span class="ico" data-icon="share"></span>Affiliate Program</a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="bar">
+      <div>
+        <h1 id="viewTitle">Deals &amp; Offers</h1>
+        <p class="muted" id="viewSub"></p>
+      </div>
+      <p class="who" id="who"></p>
+    </header>
+
+    <!-- Proofs Submit -->
+    <section class="view" id="view-proofs" data-view="proofs" hidden>
+      <div id="proofResult" class="result" hidden></div>
+      <div class="desk" id="proofDesk">
+        <form id="proofForm" class="panel">
+          <fieldset>
+            <legend>Your proof</legend>
+            <div class="grid2">
+              <div class="field">
+                <label for="pf-order">Order reference</label>
+                <input id="pf-order" name="orderRef" required maxlength="40" placeholder="ORD-1A2B3C4D" autocapitalize="characters">
+              </div>
+              <div class="field">
+                <label for="pf-type">What are you sharing</label>
+                <select id="pf-type" name="type" required>
+                  <option>Screenshot</option>
+                  <option>Video</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="pf-name">Full name</label>
+                <input id="pf-name" name="name" autocomplete="name" required maxlength="80">
+              </div>
+              <div class="field">
+                <label for="pf-contact">Phone or email</label>
+                <input id="pf-contact" name="contact" required maxlength="120" autocomplete="email">
+              </div>
+              <div class="field wide">
+                <label for="pf-link">Link to the file</label>
+                <input id="pf-link" name="link" type="url" required maxlength="500" placeholder="https://drive.google.com/...">
+              </div>
+              <div class="field wide">
+                <label for="pf-notes">Notes <span class="opt">optional</span></label>
+                <textarea id="pf-notes" name="notes" maxlength="400"></textarea>
+              </div>
+            </div>
+          </fieldset>
+          <p class="err" id="proofErr" role="alert"></p>
+          <div class="submitrow">
+            <button class="btn btn-primary" type="submit" id="proofSubmit">Submit proof</button>
+            <p class="hint" id="sendNote3" hidden></p>
+          </div>
+        </form>
+        <aside class="panel summary" aria-label="How to share a file">
+          <h3>How to share a file</h3>
+          <ul class="tips">
+            <li>Upload the screenshot or video to Google Drive or Google Photos.</li>
+            <li>Set sharing so anyone with the link can view it.</li>
+            <li>Paste that link here, together with your order reference.</li>
+          </ul>
+        </aside>
+      </div>
+      <div class="sec" id="proofListWrap">
+        <h2>Submitted proofs <span class="muted num" id="proofCount"></span></h2>
+        <div class="rows" id="proofList"></div>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <p>We never ask for card numbers, passwords or OTPs on this page.</p>
+      <p id="contactLine" hidden></p>
+    </footer>
+  </div>
+</div>
+
+
+<script src="app.js"></script>
+</body>
+</html>

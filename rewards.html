@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rewards · Offer Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="rewards">
+<div class="shell">
+  <aside class="side">
+    <a class="brand" href="index.html"><span class="logo" id="logo" aria-hidden="true">M</span><span id="brandName">Offer Desk</span></a>
+    <nav aria-label="Pages">
+      <a href="orders.html" data-view="orders" data-login="1"><span class="ico" data-icon="package"></span>Orders Dashboard</a>
+      <a href="payments.html" data-view="payments" data-login="1"><span class="ico" data-icon="wallet"></span>Payment Dashboard</a>
+      <a href="index.html" data-view="offers"><span class="ico" data-icon="tag"></span>Deal &amp; Offers</a>
+      <a href="proofs.html" data-view="proofs"><span class="ico" data-icon="image"></span>Proofs Submit</a>
+      <a href="referrals.html" data-view="referrals" data-login="1"><span class="ico" data-icon="users"></span>Referral Earnings</a>
+      <a href="whatsapp.html" data-view="whatsapp"><span class="ico" data-icon="chat"></span>Whatsapp Bot</a>
+      <a href="order.html" data-view="order"><span class="ico" data-icon="doc"></span>Order Form<span class="count num" id="navCount" hidden></span></a>
+      <a href="refund.html" data-view="refund"><span class="ico" data-icon="undo"></span>Refund Form</a>
+      <a href="terms.html" data-view="terms"><span class="ico" data-icon="file"></span>Terms &amp; Conditions</a>
+      <a href="qna.html" data-view="qna"><span class="ico" data-icon="help"></span>QnA</a>
+      <a href="rewards.html" data-view="rewards" data-login="1"><span class="ico" data-icon="trend"></span>Rewards</a>
+      <a href="affiliate.html" data-view="affiliate"><span class="ico" data-icon="share"></span>Affiliate Program</a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="bar">
+      <div>
+        <h1 id="viewTitle">Deals &amp; Offers</h1>
+        <p class="muted" id="viewSub"></p>
+      </div>
+      <p class="who" id="who"></p>
+    </header>
+
+    <!-- Rewards -->
+    <section class="view" id="view-rewards" data-view="rewards" hidden>
+      <div class="stats" id="rewardStats"></div>
+      <div class="panel stack">
+        <h3>How points work</h3>
+        <p class="muted" id="rewardRule"></p>
+        <p class="hint" id="rewardNote"></p>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <p>We never ask for card numbers, passwords or OTPs on this page.</p>
+      <p id="contactLine" hidden></p>
+    </footer>
+  </div>
+</div>
+
+
+<script src="app.js"></script>
+</body>
+</html>
