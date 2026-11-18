@@ -1,0 +1,1084 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light}body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+<title>Offer Desk</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: dashboard shell. Left menu (becomes a scrolling strip on phones), a title bar, then one page at a time: orders dashboard with stat cards and filters, offers, order form, refund form. */
+:root {
+  --bg: #F2F5F3;
+  --surface: #FFFFFF;
+  --ink: #15211E;
+  --muted: #556661;
+  --line: #D3DCD8;
+  --accent: #0E5A4A;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #DCEEE7;
+  --danger: #B3261E;
+  --danger-soft: #FBE4E1;
+  --warn: #8A5A00;
+  --warn-soft: #FBEFD0;
+  --info: #1D4F9E;
+  --info-soft: #DDE9FB;
+  --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Inter", "Segoe UI", system-ui, sans-serif;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1513;
+    --surface: #16201D;
+    --ink: #E6EFEC;
+    --muted: #93A59F;
+    --line: #2A3935;
+    --accent: #5FC9A9;
+    --accent-ink: #06241C;
+    --accent-soft: #1B3A31;
+    --danger: #F2877F;
+    --danger-soft: #3A1E1C;
+    --warn: #F0C36B;
+    --warn-soft: #3A2E10;
+    --info: #8DB6F5;
+    --info-soft: #1A2B47;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1513;
+  --surface: #16201D;
+  --ink: #E6EFEC;
+  --muted: #93A59F;
+  --line: #2A3935;
+  --accent: #5FC9A9;
+  --accent-ink: #06241C;
+  --accent-soft: #1B3A31;
+  --danger: #F2877F;
+  --danger-soft: #3A1E1C;
+  --warn: #F0C36B;
+  --warn-soft: #3A2E10;
+  --info: #8DB6F5;
+  --info-soft: #1A2B47;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 40px;
+}
+h1, h2, h3 { font-family: var(--font-display); margin: 0; text-wrap: balance; line-height: 1.15; }
+h1 { font-size: clamp(1.5rem, 3.4vw, 2rem); font-weight: 700; letter-spacing: -0.01em; }
+h2 { font-size: 1.2rem; font-weight: 600; }
+h3 { font-size: 1.05rem; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.num { font-variant-numeric: tabular-nums; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* shell */
+.shell { max-width: 1240px; margin: 0 auto; display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: 24px; align-items: start; }
+.side { position: sticky; top: max(16px, env(safe-area-inset-top, 0px)); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 12px; display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.brand { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; text-decoration: none; color: var(--ink); letter-spacing: -0.01em; padding: 0 8px; flex-shrink: 0; }
+.side nav { display: flex; flex-direction: column; gap: 2px; }
+.side nav a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; color: var(--ink); text-decoration: none; font-weight: 500; }
+.side nav a:hover { background: var(--accent-soft); }
+.side nav a[aria-current="page"] { background: var(--accent); color: var(--accent-ink); }
+.ico { display: inline-flex; flex-shrink: 0; }
+.count { background: var(--accent); color: var(--accent-ink); border-radius: 999px; padding: 0 7px; font-size: 12px; margin-left: auto; }
+.side nav a[aria-current="page"] .count { background: var(--accent-ink); color: var(--accent); }
+.main { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+.bar { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 8px 16px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+.bar p { max-width: 64ch; margin-top: 6px; }
+.who { font-size: 13px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; background: var(--surface); }
+.who:empty { display: none; }
+.view { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+
+/* stat cards */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); gap: 12px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; display: flex; align-items: center; gap: 12px; min-width: 0; }
+.tile { width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; flex-shrink: 0; font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; }
+.tile.warn { background: var(--warn-soft); color: var(--warn); }
+.tile.info { background: var(--info-soft); color: var(--info); }
+.tile.good { background: var(--accent-soft); color: var(--accent); }
+.tile.bad { background: var(--danger-soft); color: var(--danger); }
+.stat .k { font-size: 13px; color: var(--muted); }
+.stat .v { font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; line-height: 1.2; }
+
+/* search and filters */
+.searchrow { display: flex; flex-wrap: wrap; gap: 8px; }
+.searchrow select { width: auto; }
+.searchrow input { flex: 1 1 200px; width: auto; }
+.filters { display: flex; flex-direction: column; gap: 8px; }
+.fopts { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.fopt { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; cursor: pointer; }
+.fopt input { width: auto; accent-color: var(--accent); }
+
+/* pills */
+.pill { display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.info { background: var(--info-soft); color: var(--info); }
+.pill.good { background: var(--accent-soft); color: var(--accent); }
+.pill.bad { background: var(--danger-soft); color: var(--danger); }
+
+/* rows */
+.rows { display: flex; flex-direction: column; gap: 10px; }
+.row { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; min-width: 0; overflow-wrap: anywhere; }
+.otop { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; }
+.oid { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; }
+.ref { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 13px; }
+.obot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin-top: 4px; }
+.amt { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; font-variant-numeric: tabular-nums; }
+.sel-sm { width: auto; padding: 6px 10px; font-size: 14px; }
+.btn-sm { padding: 6px 12px; font-size: 14px; }
+.empty { border: 1px dashed var(--line); border-radius: var(--radius); padding: 18px; color: var(--muted); }
+.sec { display: flex; flex-direction: column; gap: 12px; }
+
+/* offers */
+.facts { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.facts li { background: var(--accent-soft); color: var(--ink); border-radius: 999px; padding: 4px 12px; font-size: 13px; font-weight: 500; }
+.offers { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+.deal { background: var(--accent-soft); padding: 16px 18px 14px; display: flex; align-items: baseline; gap: 8px; }
+.pct { font-family: var(--font-display); font-size: 2.6rem; font-weight: 700; line-height: 1; color: var(--accent); font-variant-numeric: tabular-nums; }
+.off { font-family: var(--font-display); font-weight: 600; font-size: 1rem; color: var(--accent); }
+.cbody { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.price { display: flex; align-items: baseline; gap: 10px; margin-top: auto; padding-top: 6px; }
+.price strong { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.mrp { color: var(--muted); font-variant-numeric: tabular-nums; }
+.meta { font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.meta.soon { color: var(--danger); }
+.cartbar { position: sticky; bottom: max(12px, env(safe-area-inset-bottom, 0px)); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; background: var(--surface); border: 1px solid var(--accent); border-radius: 10px; padding: 12px 16px; font-weight: 500; }
+.cartbar a.btn { text-decoration: none; }
+
+/* buttons */
+.btn { font: inherit; font-weight: 600; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 8px; padding: 9px 16px; cursor: pointer; text-decoration: none; display: inline-block; }
+.btn:hover { border-color: var(--accent); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn-primary:hover { filter: brightness(1.08); }
+
+/* forms */
+.desk { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 24px; align-items: start; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; min-width: 0; }
+form.panel { display: flex; flex-direction: column; gap: 24px; }
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+legend { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; padding: 0; margin-bottom: 12px; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 14px; }
+.field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.field.wide { grid-column: 1 / -1; }
+label, .lbl { font-size: 13px; font-weight: 500; }
+.opt { color: var(--muted); font-weight: 400; margin-left: 4px; }
+input, select, textarea {
+  font: inherit; font-size: 16px; color: var(--ink); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; width: 100%; min-width: 0;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+textarea { resize: vertical; min-height: 84px; }
+.hint { font-size: 13px; color: var(--muted); }
+
+.items { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 8px; }
+.item { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; }
+.item + .item { border-top: 1px solid var(--line); }
+.item.has { background: var(--accent-soft); }
+.iinfo { display: flex; flex-direction: column; min-width: 0; }
+.iname { font-weight: 500; overflow-wrap: anywhere; }
+.step { display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.sbtn { font: inherit; font-weight: 600; width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; line-height: 1; }
+.sbtn:hover:not(:disabled) { border-color: var(--accent); }
+.sbtn:disabled { opacity: 0.4; cursor: not-allowed; }
+.sqty { min-width: 28px; text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.choices { display: flex; flex-direction: column; gap: 8px; }
+.choice { display: flex; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 15px; font-weight: 400; cursor: pointer; }
+.choice input { width: auto; accent-color: var(--accent); }
+.choice:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+
+.err { color: var(--danger); font-weight: 500; }
+.err:empty { display: none; }
+.submitrow { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+
+.summary { position: sticky; top: max(16px, env(safe-area-inset-top, 0px)); display: flex; flex-direction: column; gap: 14px; }
+.lines { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.lines li { display: flex; justify-content: space-between; gap: 12px; }
+.lines li span:first-child { overflow-wrap: anywhere; }
+.totals { margin: 0; display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--line); padding-top: 12px; }
+.totals div { display: flex; justify-content: space-between; gap: 12px; }
+.totals dt { color: var(--muted); }
+.totals dd { margin: 0; }
+.totals .save dd, .totals .save dt { color: var(--accent); font-weight: 500; }
+.totals .grand { border-top: 1px solid var(--line); padding-top: 10px; margin-top: 4px; }
+.totals .grand dt { color: var(--ink); font-weight: 600; }
+.totals .grand dd { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; }
+.tips { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 8px; color: var(--muted); }
+
+.result { border: 1px solid var(--accent); background: var(--accent-soft); border-radius: var(--radius); padding: 22px; display: flex; flex-direction: column; gap: 12px; }
+.result.warn { border-color: var(--danger); background: var(--danger-soft); }
+.result .summarybox { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 13px; min-height: 0; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.foot { border-top: 1px solid var(--line); padding-top: 16px; color: var(--muted); font-size: 13px; display: flex; flex-direction: column; gap: 4px; }
+
+@media (max-width: 900px) {
+  .shell { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .side { position: static; flex-direction: row; align-items: center; gap: 8px 12px; padding: 8px 10px; }
+  .side nav { flex-direction: row; overflow-x: auto; flex: 1; min-width: 0; }
+  .side nav a { white-space: nowrap; padding: 8px 12px; }
+  .brand { padding: 0 4px; }
+}
+@media (max-width: 820px) {
+  .desk { grid-template-columns: minmax(0, 1fr); }
+  .summary { position: static; }
+  .panel, .result { padding: 18px; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <a class="brand" href="#offers" id="brand">Offer Desk</a>
+    <nav aria-label="Pages">
+      <a href="#orders" data-view="orders"><span class="ico" data-icon="package"></span>Orders Dashboard</a>
+      <a href="#offers" data-view="offers"><span class="ico" data-icon="tag"></span>Deals &amp; Offers</a>
+      <a href="#order" data-view="order"><span class="ico" data-icon="bag"></span>Place an Order<span class="count num" id="navCount" hidden></span></a>
+      <a href="#refund" data-view="refund"><span class="ico" data-icon="undo"></span>Refund Form</a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="bar">
+      <div>
+        <h1 id="viewTitle">Deals &amp; Offers</h1>
+        <p class="muted" id="viewSub"></p>
+      </div>
+      <p class="who" id="who"></p>
+    </header>
+
+    <!-- Orders dashboard -->
+    <section class="view" id="view-orders" data-view="orders" hidden>
+      <div class="stats" id="stats"></div>
+
+      <div class="searchrow">
+        <select id="q-type" aria-label="Search by">
+          <option value="ref">Order ID</option>
+          <option value="name">Name</option>
+          <option value="phone">Phone</option>
+        </select>
+        <input id="q" type="search" placeholder="Search orders" aria-label="Search orders" autocomplete="off">
+        <button class="btn" type="button" id="resetBtn">Reset</button>
+      </div>
+
+      <div class="filters" role="radiogroup" aria-label="Show only">
+        <span class="lbl">Show only</span>
+        <div class="fopts" id="filters"></div>
+      </div>
+
+      <p class="err" id="dashNote" role="status"></p>
+
+      <div class="sec">
+        <h2>Orders <span class="muted num" id="orderCount"></span></h2>
+        <div class="rows" id="orderList"></div>
+      </div>
+      <div class="sec">
+        <h2>Refund requests <span class="muted num" id="refundCount"></span></h2>
+        <div class="rows" id="refundList"></div>
+      </div>
+    </section>
+
+    <!-- Deals and offers -->
+    <section class="view" id="view-offers" data-view="offers">
+      <ul class="facts" id="facts"></ul>
+      <div class="offers" id="offerGrid"></div>
+      <div class="cartbar" id="cartBar" hidden>
+        <span id="cartText"></span>
+        <a class="btn btn-primary" href="#order">Review and send order</a>
+      </div>
+    </section>
+
+    <!-- Place an order -->
+    <section class="view" id="view-order" data-view="order" hidden>
+      <div id="orderResult" class="result" hidden></div>
+      <div class="desk" id="orderDesk">
+        <form id="orderForm" class="panel">
+          <fieldset>
+            <legend>Items</legend>
+            <div class="items" id="itemList"></div>
+            <p class="hint">Use + and − to set quantities. Offer prices are already applied.</p>
+          </fieldset>
+
+          <fieldset>
+            <legend>Your details</legend>
+            <div class="grid2">
+              <div class="field">
+                <label for="o-name">Full name</label>
+                <input id="o-name" name="name" autocomplete="name" required maxlength="80">
+              </div>
+              <div class="field">
+                <label for="o-phone">Phone</label>
+                <input id="o-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required pattern="[0-9+ \-]{10,15}" title="10 to 15 digits, for example 98765 43210" maxlength="20">
+              </div>
+              <div class="field wide">
+                <label for="o-email">Email <span class="opt">optional</span></label>
+                <input id="o-email" name="email" type="email" autocomplete="email" maxlength="120">
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Delivery</legend>
+            <div class="grid2">
+              <div class="field wide">
+                <label for="o-address">Address</label>
+                <textarea id="o-address" name="address" autocomplete="street-address" required maxlength="300" placeholder="House or flat number, street, area, city"></textarea>
+              </div>
+              <div class="field">
+                <label for="o-pin">PIN code</label>
+                <input id="o-pin" name="pin" inputmode="numeric" autocomplete="postal-code" required pattern="[1-9][0-9]{5}" maxlength="6" title="6 digit PIN code">
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Payment</legend>
+            <div class="choices" role="radiogroup" aria-label="Payment method">
+              <label class="choice" for="pay-cod"><input type="radio" id="pay-cod" name="payment" value="cod" checked> Pay on delivery</label>
+              <label class="choice" for="pay-upi"><input type="radio" id="pay-upi" name="payment" value="upi"> UPI, after we confirm the order</label>
+              <label class="choice" for="pay-bank"><input type="radio" id="pay-bank" name="payment" value="bank"> Bank transfer, after we confirm the order</label>
+            </div>
+            <p class="hint">Nothing is charged on this page. Never share card numbers, passwords or OTPs here.</p>
+          </fieldset>
+
+          <div class="field">
+            <label for="o-notes">Notes <span class="opt">optional</span></label>
+            <textarea id="o-notes" name="notes" maxlength="400" placeholder="Size, colour, delivery instructions"></textarea>
+          </div>
+
+          <p class="err" id="orderErr" role="alert"></p>
+          <div class="submitrow">
+            <button class="btn btn-primary" type="submit" id="orderSubmit">Send order</button>
+            <p class="hint" id="sendNote" hidden></p>
+          </div>
+        </form>
+
+        <aside class="panel summary" aria-live="polite" aria-label="Order summary">
+          <h3>Order summary</h3>
+          <div id="sumBody"></div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Refund form -->
+    <section class="view" id="view-refund" data-view="refund" hidden>
+      <div id="refundResult" class="result" hidden></div>
+      <div class="desk" id="refundDesk">
+        <form id="refundForm" class="panel">
+          <fieldset>
+            <legend>Your order</legend>
+            <div class="grid2">
+              <div class="field">
+                <label for="r-order">Order reference</label>
+                <input id="r-order" name="orderRef" required maxlength="40" placeholder="ORD-1A2B3C4D" autocapitalize="characters">
+              </div>
+              <div class="field">
+                <label for="r-contact">Phone or email used on the order</label>
+                <input id="r-contact" name="contact" required maxlength="120" autocomplete="email">
+              </div>
+              <div class="field">
+                <label for="r-name">Full name</label>
+                <input id="r-name" name="name" autocomplete="name" required maxlength="80">
+              </div>
+              <div class="field">
+                <label for="r-item">Item</label>
+                <select id="r-item" name="item" required></select>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>What went wrong</legend>
+            <div class="grid2">
+              <div class="field">
+                <label for="r-reason">Reason</label>
+                <select id="r-reason" name="reason" required>
+                  <option value="" selected disabled>Choose one</option>
+                  <option>Arrived damaged</option>
+                  <option>Wrong item received</option>
+                  <option>Item not as described</option>
+                  <option>Arrived too late</option>
+                  <option>Never arrived</option>
+                  <option>Changed my mind</option>
+                  <option>Something else</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="r-want">You would like</label>
+                <select id="r-want" name="want" required>
+                  <option>A refund</option>
+                  <option>A replacement</option>
+                </select>
+              </div>
+              <div class="field wide">
+                <label for="r-details">Details</label>
+                <textarea id="r-details" name="details" required minlength="10" maxlength="800" placeholder="Tell us what happened, in a few lines"></textarea>
+              </div>
+            </div>
+          </fieldset>
+
+          <p class="err" id="refundErr" role="alert"></p>
+          <div class="submitrow">
+            <button class="btn btn-primary" type="submit" id="refundSubmit">Send refund request</button>
+            <p class="hint" id="sendNote2" hidden></p>
+          </div>
+        </form>
+
+        <aside class="panel summary" aria-label="Before you send">
+          <h3>Before you send</h3>
+          <ul class="tips">
+            <li>Use the reference you received when you placed the order.</li>
+            <li>Each request is reviewed individually, so a clear description helps.</li>
+            <li>One request per item. Send a second request for another item.</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <p>We never ask for card numbers, passwords or OTPs on this page.</p>
+      <p id="contactLine" hidden></p>
+    </footer>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // Edit these blocks to change the shop. Everything else renders from them.
+  var CONFIG = { shop: "Offer Desk", cur: "₹", deliveryFee: 49, freeAbove: 999, contact: "",
+    // Static site only: paste your form service address here, for example "https://formspree.io/f/xxxxxxxx".
+    // Web3Forms also needs your key: formExtra: { access_key: "your-key" }
+    formEndpoint: "", formExtra: {} };
+  var PRODUCTS = [
+    { id: "tee", name: "Everyday Cotton Tee, pack of 2", note: "Soft combed cotton. Mention your size in the order notes.", mrp: 799, price: 549, until: "2026-11-30" },
+    { id: "bottle", name: "Steel Bottle, 750 ml", note: "Double-wall insulated bottle with a leak-proof lid.", mrp: 1199, price: 899, until: "2026-11-30" },
+    { id: "earbuds", name: "Wireless Earbuds", note: "Bluetooth earbuds with a pocket charging case.", mrp: 2999, price: 1999, until: "2026-11-30" },
+    { id: "organiser", name: "Desk Organiser Set", note: "Pen cup, phone stand and tray in matte metal.", mrp: 649, price: 449, until: "2026-11-26" },
+    { id: "notebooks", name: "Notebook Bundle, 4 pieces", note: "A5 ruled notebooks with stitched binding.", mrp: 520, price: 399, until: "2026-11-30" },
+    { id: "sleeve", name: "Laptop Sleeve, 14 inch", note: "Water-resistant shell with a soft lining.", mrp: 999, price: 699, until: "2026-12-05" }
+  ];
+  var PAY = { cod: "Pay on delivery", upi: "UPI after confirmation", bank: "Bank transfer after confirmation" };
+  var ORDER_STATUS = {
+    "new": { label: "New", tone: "warn" },
+    confirmed: { label: "Confirmed", tone: "info" },
+    paid: { label: "Paid", tone: "good" },
+    delivered: { label: "Delivered", tone: "good" },
+    cancelled: { label: "Cancelled", tone: "bad" }
+  };
+  var REFUND_STATUS = {
+    requested: { label: "Requested", tone: "warn" },
+    approved: { label: "Approved", tone: "info" },
+    refunded: { label: "Refunded", tone: "good" },
+    rejected: { label: "Rejected", tone: "bad" }
+  };
+  var ICONS = {
+    package: "M16.5 9.4l-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z M3.27 6.96L12 12.01l8.73-5.05 M12 22.08V12",
+    tag: "M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z M7 7h.01",
+    bag: "M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z M3 6h18 M16 10a4 4 0 0 1-8 0",
+    undo: "M1 4v6h6 M3.51 15a9 9 0 1 0 2.13-9.36L1 10",
+    clock: "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M12 6v6l4 2",
+    check: "M22 11.08V12a10 10 0 1 1-5.93-9.14 M22 4L12 14.01l-3-3",
+    x: "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M15 9l-6 6 M9 9l6 6"
+  };
+  function svg(name, size) {
+    return '<svg viewBox="0 0 24 24" width="' + size + '" height="' + size + '" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + ICONS[name] + '"/></svg>';
+  }
+  document.querySelectorAll("[data-icon]").forEach(function (n) { n.innerHTML = svg(n.dataset.icon, 20); });
+
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function inr(n) { return CONFIG.cur + Math.round(n).toLocaleString("en-IN"); }
+  function pct(p) { return Math.round((1 - p.price / p.mrp) * 100); }
+  function daysLeft(p) {
+    var end = new Date(p.until + "T00:00:00");
+    var t = new Date(); t.setHours(0, 0, 0, 0);
+    return Math.round((end - t) / 864e5);
+  }
+  function shortDate(iso) { return new Date(iso + "T12:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short" }); }
+  function leftText(p) {
+    var d = daysLeft(p);
+    if (d < 0) return "Offer ended";
+    if (d === 0) return "Last day";
+    return d === 1 ? "1 day left" : d + " days left";
+  }
+  function when(iso) {
+    var d = new Date(iso);
+    return isNaN(d) ? "" : d.toLocaleString("en-IN", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" });
+  }
+  function makeRef(prefix) {
+    var a = Date.now().toString(36).slice(-4).toUpperCase();
+    var b = Math.random().toString(36).slice(2, 6).toUpperCase();
+    return prefix + "-" + a + b;
+  }
+  function pill(meta) { return el("span", "pill " + meta.tone, meta.label); }
+  var smooth = (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) ? "auto" : "smooth";
+
+  /* ---------- who is viewing (set at boot) ---------- */
+  var db = null, uid = null, canEdit = false, isOwner = false, booted = false;
+  var STATIC = !(window.claude && window.claude.use);
+
+  /* ---------- pages: one view per address ---------- */
+  var VIEWS = STATIC ? ["offers", "order", "refund"] : ["orders", "offers", "order", "refund"];
+  if (STATIC) { var dashLink = document.querySelector('nav a[data-view="orders"]'); if (dashLink) dashLink.hidden = true; }
+  var TITLES = { orders: "Orders Dashboard", offers: "Deals & Offers", order: "Place an Order", refund: "Refund Form" };
+  var SUBS = {
+    offers: "Prices shown are the offer prices. Add items, then review and send your order.",
+    order: "Fill in your delivery details. Nothing is charged on this page.",
+    refund: "Tell us what went wrong with an order."
+  };
+  function subFor(name) {
+    if (name !== "orders") return SUBS[name];
+    if (canEdit) return "Every order and refund request sent through this page. " + (isOwner ? "Change a status from the menu on each row." : "Only the owner can change statuses.");
+    return "Orders and refund requests you sent from this page, with their current status.";
+  }
+  var currentView = "offers";
+  function showView(name) {
+    if (VIEWS.indexOf(name) < 0) name = "offers";
+    currentView = name;
+    document.querySelectorAll(".view").forEach(function (s) { s.hidden = s.dataset.view !== name; });
+    document.querySelectorAll("nav a[data-view]").forEach(function (a) {
+      if (a.dataset.view === name) a.setAttribute("aria-current", "page");
+      else a.removeAttribute("aria-current");
+    });
+    $("#viewTitle").textContent = TITLES[name];
+    $("#viewSub").textContent = subFor(name);
+    window.scrollTo(0, 0);
+  }
+  function route() { showView(location.hash.slice(1)); }
+  addEventListener("hashchange", route);
+
+  /* ---------- header, facts ---------- */
+  $("#brand").textContent = CONFIG.shop;
+  var ends = PRODUCTS.map(function (p) { return p.until; }).sort();
+  [
+    "Free delivery on orders of " + inr(CONFIG.freeAbove) + " or more",
+    inr(CONFIG.deliveryFee) + " delivery below that",
+    ends[0] === ends[ends.length - 1] ? "Offers end " + shortDate(ends[0]) : "Offers end " + shortDate(ends[0]) + " to " + shortDate(ends[ends.length - 1])
+  ].forEach(function (f) { $("#facts").append(el("li", null, f)); });
+  if (CONFIG.contact) {
+    var cl = $("#contactLine"); cl.textContent = "Questions: " + CONFIG.contact; cl.hidden = false;
+  }
+
+  /* ---------- order state ---------- */
+  var qty = {};
+  PRODUCTS.forEach(function (p) { qty[p.id] = 0; });
+  var cardBtn = {}, rowRef = {};
+
+  function totals() {
+    var sub = 0, mrp = 0, n = 0;
+    PRODUCTS.forEach(function (p) { var q = qty[p.id]; sub += p.price * q; mrp += p.mrp * q; n += q; });
+    var delivery = n === 0 ? 0 : (sub >= CONFIG.freeAbove ? 0 : CONFIG.deliveryFee);
+    return { sub: sub, mrp: mrp, n: n, delivery: delivery, total: sub + delivery, save: mrp - sub };
+  }
+
+  /* ---------- offer cards ---------- */
+  var grid = $("#offerGrid");
+  PRODUCTS.forEach(function (p) {
+    var d = daysLeft(p), ended = d < 0;
+    var card = el("article", "card");
+    var deal = el("div", "deal");
+    deal.append(el("span", "pct", pct(p) + "%"), el("span", "off", "off"));
+    var body = el("div", "cbody");
+    body.append(el("h3", null, p.name), el("p", "muted small", p.note));
+    var price = el("p", "price");
+    price.append(el("strong", null, inr(p.price)), el("s", "mrp", inr(p.mrp)));
+    var meta = el("p", "meta" + (!ended && d <= 3 ? " soon" : ""), ended ? "Offer ended" : "Ends " + shortDate(p.until) + " · " + leftText(p));
+    var btn = el("button", "btn btn-primary", "Add to order");
+    btn.type = "button";
+    btn.disabled = ended;
+    btn.addEventListener("click", function () { setQty(p.id, qty[p.id] + 1); });
+    cardBtn[p.id] = btn;
+    body.append(price, meta, btn);
+    card.append(deal, body);
+    grid.append(card);
+  });
+
+  /* ---------- item list in order form ---------- */
+  var list = $("#itemList");
+  PRODUCTS.forEach(function (p) {
+    var ended = daysLeft(p) < 0;
+    var row = el("div", "item");
+    var info = el("div", "iinfo");
+    info.append(el("span", "iname", p.name), el("span", "muted small", inr(p.price) + " each"));
+    var step = el("div", "step");
+    var minus = el("button", "sbtn", "−"); minus.type = "button"; minus.setAttribute("aria-label", "Remove one " + p.name);
+    var out = el("output", "sqty", "0");
+    var plus = el("button", "sbtn", "+"); plus.type = "button"; plus.setAttribute("aria-label", "Add one " + p.name);
+    plus.disabled = ended;
+    minus.addEventListener("click", function () { setQty(p.id, qty[p.id] - 1); });
+    plus.addEventListener("click", function () { setQty(p.id, qty[p.id] + 1); });
+    step.append(minus, out, plus);
+    row.append(info, step);
+    list.append(row);
+    rowRef[p.id] = { row: row, out: out, minus: minus, plus: plus, ended: ended };
+  });
+
+  function setQty(id, v) {
+    qty[id] = Math.max(0, Math.min(20, v));
+    refresh();
+  }
+  function refresh() {
+    PRODUCTS.forEach(function (p) {
+      var r = rowRef[p.id], q = qty[p.id];
+      r.out.textContent = String(q);
+      r.row.classList.toggle("has", q > 0);
+      r.minus.disabled = q === 0;
+      r.plus.disabled = r.ended || q >= 20;
+      if (!r.ended) cardBtn[p.id].textContent = q > 0 ? "In your order (" + q + ")" : "Add to order";
+    });
+    renderSummary();
+    renderCart();
+  }
+  function renderCart() {
+    var t = totals(), nc = $("#navCount");
+    nc.textContent = t.n ? String(t.n) : "";
+    nc.hidden = !t.n;
+    $("#cartBar").hidden = !t.n;
+    $("#cartText").textContent = t.n + (t.n === 1 ? " item" : " items") + " · " + inr(t.sub);
+  }
+  function renderSummary() {
+    var t = totals(), box = $("#sumBody");
+    box.textContent = "";
+    if (!t.n) {
+      box.append(el("p", "muted", "No items yet. Add something from Deals & Offers, or use + in the item list."));
+      return;
+    }
+    var ul = el("ul", "lines");
+    PRODUCTS.forEach(function (p) {
+      if (qty[p.id]) {
+        var li = el("li");
+        li.append(el("span", null, qty[p.id] + " × " + p.name), el("span", "num", inr(p.price * qty[p.id])));
+        ul.append(li);
+      }
+    });
+    box.append(ul);
+    var dl = el("dl", "totals");
+    function add(k, v, cls) { var r = el("div", cls); r.append(el("dt", null, k), el("dd", "num", v)); dl.append(r); }
+    add("Subtotal", inr(t.sub));
+    if (t.save > 0) add("You save", inr(t.save), "save");
+    add("Delivery", t.delivery ? inr(t.delivery) : "Free");
+    add("Total", inr(t.total), "grand");
+    box.append(dl);
+    if (t.delivery) box.append(el("p", "muted small", "Add " + inr(CONFIG.freeAbove - t.sub) + " more for free delivery."));
+  }
+
+  /* ---------- refund item select ---------- */
+  (function () {
+    var s = $("#r-item");
+    var first = el("option", null, "Choose the item"); first.value = ""; first.disabled = true; first.selected = true;
+    s.append(first);
+    PRODUCTS.forEach(function (p) { s.append(el("option", null, p.name)); });
+    s.append(el("option", null, "Other"));
+  })();
+
+  /* ---------- storage (db capability) ---------- */
+  async function getCap(name) {
+    try { return (window.claude && window.claude.use) ? await window.claude.use(name) : null; }
+    catch (_) { return null; }
+  }
+  async function save(kind, rec, summary) {
+    if (STATIC) {
+      if (!CONFIG.formEndpoint) throw { code: "no_endpoint" };
+      var isOrder = kind === "orders";
+      var contact = rec.contact || "";
+      var subject = "New " + (isOrder ? "order " : "refund request ") + rec.ref;
+      var payload = Object.assign({}, CONFIG.formExtra, {
+        reference: rec.ref,
+        type: isOrder ? "Order" : "Refund request",
+        subject: subject,
+        _subject: subject,
+        name: rec.name,
+        email: rec.email || (contact.indexOf("@") > 0 ? contact : ""),
+        phone: rec.phone || (contact && contact.indexOf("@") < 0 ? contact : ""),
+        message: summary || ""
+      });
+      var res = await fetch(CONFIG.formEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw { code: "http_" + res.status };
+      return;
+    }
+    if (!db || !uid) throw { code: "unavailable" };
+    var ref = db.doc(kind + "/" + uid);
+    var body = {}; body[kind] = {}; body[kind][rec.ref] = rec;
+    try { await ref.update(body); } catch (_) { await ref.set(body); }
+  }
+
+  /* ---------- result card ---------- */
+  function showResult(box, desk, ok, title, paras, summaryText, againLabel) {
+    box.textContent = "";
+    box.className = "result" + (ok ? "" : " warn");
+    box.append(el("h3", null, title));
+    paras.forEach(function (t) { box.append(el("p", null, t)); });
+    if (CONFIG.contact && !ok) box.append(el("p", null, "Send it to: " + CONFIG.contact));
+    var ta = el("textarea", "summarybox");
+    ta.readOnly = true; ta.value = summaryText;
+    ta.rows = Math.min(14, summaryText.split("\n").length + 1);
+    ta.setAttribute("aria-label", "Details to copy");
+    var actions = el("div", "actions");
+    var copy = el("button", "btn", "Copy details"); copy.type = "button";
+    copy.addEventListener("click", async function () {
+      try { await navigator.clipboard.writeText(ta.value); copy.textContent = "Copied"; }
+      catch (_) { ta.focus(); ta.select(); copy.textContent = "Selected, press Ctrl+C"; }
+    });
+    var again = el("button", "btn", againLabel); again.type = "button";
+    again.addEventListener("click", function () { box.hidden = true; desk.hidden = false; });
+    actions.append(copy, again);
+    if (ok && !STATIC) {
+      var go = el("a", "btn btn-primary", "Go to orders dashboard"); go.href = "#orders";
+      actions.append(go);
+    }
+    box.append(ta, actions);
+    box.hidden = false; desk.hidden = true;
+    box.scrollIntoView({ behavior: smooth, block: "nearest" });
+  }
+  function lineItems(items) { return items.map(function (i) { return i.qty + " x " + i.name + " (" + inr(i.price * i.qty) + ")"; }); }
+
+  /* ---------- order submit ---------- */
+  var orderForm = $("#orderForm");
+  orderForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    var err = $("#orderErr"); err.textContent = "";
+    var t = totals();
+    if (!t.n) { err.textContent = "Add at least one item to your order."; return; }
+    var f = new FormData(orderForm);
+    var rec = {
+      ref: makeRef("ORD"), createdAt: new Date().toISOString(),
+      name: String(f.get("name") || "").trim(), phone: String(f.get("phone") || "").trim(),
+      email: String(f.get("email") || "").trim(), address: String(f.get("address") || "").trim(),
+      pin: String(f.get("pin") || "").trim(), payment: String(f.get("payment") || "cod"),
+      notes: String(f.get("notes") || "").trim(),
+      items: PRODUCTS.filter(function (p) { return qty[p.id] > 0; }).map(function (p) { return { id: p.id, name: p.name, qty: qty[p.id], price: p.price }; }),
+      total: t.total, delivery: t.delivery
+    };
+    var summary = [
+      "Order " + rec.ref,
+      "Name: " + rec.name,
+      "Phone: " + rec.phone + (rec.email ? "  Email: " + rec.email : ""),
+      "Address: " + rec.address + ", " + rec.pin,
+      "Items: " + lineItems(rec.items).join("; "),
+      "Delivery: " + (rec.delivery ? inr(rec.delivery) : "Free"),
+      "Total: " + inr(rec.total),
+      "Payment: " + PAY[rec.payment] + (rec.notes ? "\nNotes: " + rec.notes : "")
+    ].join("\n");
+    var btn = $("#orderSubmit"); btn.disabled = true; btn.textContent = "Sending…";
+    var ok = true;
+    try { await save("orders", rec, summary); } catch (_) { ok = false; }
+    btn.disabled = false; btn.textContent = "Send order";
+    if (ok) {
+      showResult($("#orderResult"), $("#orderDesk"), true, "Order received",
+        ["Your reference is " + rec.ref + ". Keep it, you will need it for any refund request." + (STATIC ? " The shop will get in touch to confirm your order." : " You can follow its status on the orders dashboard.")],
+        summary, "Place another order");
+      PRODUCTS.forEach(function (p) { qty[p.id] = 0; });
+      orderForm.reset(); refresh();
+    } else {
+      showResult($("#orderResult"), $("#orderDesk"), false, "Not sent yet",
+        ["This view could not send the order to the shop. Your details are below: copy them and message them to the shop with reference " + rec.ref + "."],
+        summary, "Back to the form");
+    }
+  });
+
+  /* ---------- refund submit ---------- */
+  var refundForm = $("#refundForm");
+  refundForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    $("#refundErr").textContent = "";
+    var f = new FormData(refundForm);
+    var rec = {
+      ref: makeRef("REF"), createdAt: new Date().toISOString(),
+      orderRef: String(f.get("orderRef") || "").trim().toUpperCase(),
+      contact: String(f.get("contact") || "").trim(), name: String(f.get("name") || "").trim(),
+      item: String(f.get("item") || ""), reason: String(f.get("reason") || ""),
+      want: String(f.get("want") || ""), details: String(f.get("details") || "").trim()
+    };
+    var summary = [
+      "Refund request " + rec.ref,
+      "Order: " + rec.orderRef,
+      "Name: " + rec.name + "  Contact: " + rec.contact,
+      "Item: " + rec.item,
+      "Reason: " + rec.reason,
+      "Would like: " + rec.want,
+      "Details: " + rec.details
+    ].join("\n");
+    var btn = $("#refundSubmit"); btn.disabled = true; btn.textContent = "Sending…";
+    var ok = true;
+    try { await save("refunds", rec, summary); } catch (_) { ok = false; }
+    btn.disabled = false; btn.textContent = "Send refund request";
+    if (ok) {
+      showResult($("#refundResult"), $("#refundDesk"), true, "Request received",
+        ["Your reference is " + rec.ref + ". We will look at it using order " + rec.orderRef + "."],
+        summary, "Send another request");
+      refundForm.reset();
+    } else {
+      showResult($("#refundResult"), $("#refundDesk"), false, "Not sent yet",
+        ["This view could not send the request to the shop. Copy the details below and message them to the shop with reference " + rec.ref + "."],
+        summary, "Back to the form");
+    }
+  });
+
+  /* ---------- orders dashboard ---------- */
+  var orders = [], refunds = [], statusMap = {}, dashReady = false;
+  var filter = "all", qType = "ref", qText = "";
+  var FILTERS = [["all", "All"], ["new", "New"], ["confirmed", "Confirmed"], ["paid", "Paid"], ["delivered", "Delivered"], ["cancelled", "Cancelled"], ["refund", "Refund requested"]];
+
+  function orderStatus(o) { var s = statusMap[o.ref]; return ORDER_STATUS[s] ? s : "new"; }
+  function refundStatus(r) { var s = statusMap[r.ref]; return REFUND_STATUS[s] ? s : "requested"; }
+  function hasRefund(ref) { return refunds.some(function (r) { return r.orderRef === ref; }); }
+  function setNote(t) { $("#dashNote").textContent = t || ""; }
+
+  var fbox = $("#filters");
+  FILTERS.forEach(function (f) {
+    var id = "f-" + f[0];
+    var lab = el("label", "fopt"); lab.setAttribute("for", id);
+    var inp = document.createElement("input");
+    inp.type = "radio"; inp.name = "flt"; inp.id = id; inp.value = f[0]; inp.checked = f[0] === "all";
+    inp.addEventListener("change", function () { filter = f[0]; renderDash(); });
+    var cnt = el("span", "muted num"); cnt.id = "fc-" + f[0];
+    lab.append(inp, document.createTextNode(f[1] + " "), cnt);
+    fbox.append(lab);
+  });
+  $("#q").addEventListener("input", function (e) { qText = e.target.value.trim().toLowerCase(); renderDash(); });
+  $("#q-type").addEventListener("change", function (e) { qType = e.target.value; renderDash(); });
+  $("#resetBtn").addEventListener("click", function () {
+    filter = "all"; qText = ""; qType = "ref";
+    $("#f-all").checked = true; $("#q").value = ""; $("#q-type").value = "ref";
+    renderDash();
+  });
+
+  function matches(o) {
+    var st = orderStatus(o);
+    if (filter === "refund") { if (!hasRefund(o.ref)) return false; }
+    else if (filter !== "all" && st !== filter) return false;
+    if (qText) {
+      var hay = qType === "ref" ? o.ref : qType === "name" ? o.name : o.phone;
+      if (String(hay || "").toLowerCase().indexOf(qText) < 0) return false;
+    }
+    return true;
+  }
+
+  function renderStats() {
+    var amount = 0, pending = 0, paid = 0, cancelled = 0;
+    orders.forEach(function (o) {
+      var s = orderStatus(o), t = o.total || 0;
+      if (s === "cancelled") cancelled++; else amount += t;
+      if (s === "new" || s === "confirmed") pending++;
+      if (s === "paid" || s === "delivered") paid += t;
+    });
+    var cards = [
+      ["package", "Orders", String(orders.length), "info"],
+      [null, "Amount", inr(amount), "good"],
+      ["clock", "Pending", String(pending), "warn"],
+      [null, "Paid amount", inr(paid), "good"],
+      ["x", "Cancelled", String(cancelled), "bad"],
+      ["undo", "Refund requests", String(refunds.length), "warn"]
+    ];
+    var box = $("#stats"); box.textContent = "";
+    cards.forEach(function (c) {
+      var card = el("div", "stat");
+      var tile = el("span", "tile " + c[3]);
+      if (c[0]) tile.innerHTML = svg(c[0], 20); else tile.textContent = CONFIG.cur;
+      var txt = el("div");
+      txt.append(el("div", "k", c[1]), el("div", "v", c[2]));
+      card.append(tile, txt);
+      box.append(card);
+    });
+  }
+
+  function statusSelect(map, current, onChange) {
+    var s = el("select", "sel-sm"); s.setAttribute("aria-label", "Change status");
+    Object.keys(map).forEach(function (k) {
+      var o = el("option", null, map[k].label); o.value = k;
+      if (k === current) o.selected = true;
+      s.append(o);
+    });
+    s.addEventListener("change", function () { onChange(s); });
+    return s;
+  }
+  async function setStatus(ref, val, kind, sel, prev) {
+    sel.disabled = true;
+    try {
+      await db.doc("status/" + ref).set({ status: val, kind: kind, at: new Date().toISOString() });
+      setNote("");
+    } catch (_) {
+      sel.value = prev;
+      setNote("Couldn't save that status. Try again.");
+    }
+    sel.disabled = false;
+  }
+  function startRefund(o) {
+    $("#r-order").value = o.ref;
+    $("#r-name").value = o.name || "";
+    $("#r-contact").value = o.phone || o.email || "";
+    $("#refundResult").hidden = true; $("#refundDesk").hidden = false;
+    location.hash = "refund";
+  }
+
+  function orderRow(o) {
+    var st = orderStatus(o);
+    var row = el("article", "row");
+    var top = el("div", "otop");
+    var id = el("div", "oid");
+    id.append(el("strong", "ref", o.ref), el("span", "muted small", when(o.createdAt)));
+    var tags = el("div", "oid");
+    if (hasRefund(o.ref)) tags.append(el("span", "pill info", "Refund requested"));
+    tags.append(pill(ORDER_STATUS[st]));
+    top.append(id, tags);
+    row.append(top);
+    if (canEdit) {
+      row.append(el("p", null, [o.name, o.phone, o.email].filter(Boolean).join(" · ")));
+      row.append(el("p", "muted small", [o.address, o.pin].filter(Boolean).join(", ")));
+    }
+    var items = (o.items || []).map(function (i) { return i.qty + " × " + i.name; }).join(", ");
+    row.append(el("p", null, items));
+    var extra = "Payment: " + (PAY[o.payment] || o.payment || "") + (o.notes ? " · Note: " + o.notes : "");
+    row.append(el("p", "small muted", extra));
+    var bot = el("div", "obot");
+    bot.append(el("span", "amt", inr(o.total || 0)));
+    if (isOwner && db) {
+      bot.append(statusSelect(ORDER_STATUS, st, function (sel) { setStatus(o.ref, sel.value, "order", sel, st); }));
+    } else if (!canEdit && st !== "cancelled" && !hasRefund(o.ref)) {
+      var rb = el("button", "btn btn-sm", "Request refund"); rb.type = "button";
+      rb.addEventListener("click", function () { startRefund(o); });
+      bot.append(rb);
+    }
+    row.append(bot);
+    return row;
+  }
+  function refundRow(r) {
+    var st = refundStatus(r);
+    var row = el("article", "row");
+    var top = el("div", "otop");
+    var id = el("div", "oid");
+    id.append(el("strong", "ref", r.ref), el("span", "muted small", when(r.createdAt)));
+    top.append(id, pill(REFUND_STATUS[st]));
+    row.append(top);
+    row.append(el("p", null, "Order " + (r.orderRef || "") + " · " + (r.item || "")));
+    if (canEdit) row.append(el("p", null, [r.name, r.contact].filter(Boolean).join(" · ")));
+    row.append(el("p", "small", (r.reason || "") + " · wants " + String(r.want || "").toLowerCase()));
+    row.append(el("p", "small muted", r.details || ""));
+    if (isOwner && db) {
+      var bot = el("div", "obot");
+      bot.append(el("span"));
+      bot.append(statusSelect(REFUND_STATUS, st, function (sel) { setStatus(r.ref, sel.value, "refund", sel, st); }));
+      row.append(bot);
+    }
+    return row;
+  }
+  function emptyNote(text) { return el("div", "empty", text); }
+
+  function renderDash() {
+    renderStats();
+    var ol = $("#orderList"), rl = $("#refundList");
+    ol.textContent = ""; rl.textContent = "";
+    FILTERS.forEach(function (f) {
+      var n = orders.filter(function (o) {
+        if (f[0] === "all") return true;
+        if (f[0] === "refund") return hasRefund(o.ref);
+        return orderStatus(o) === f[0];
+      }).length;
+      var c = $("#fc-" + f[0]); if (c) c.textContent = "(" + n + ")";
+    });
+    var shown = orders.filter(matches);
+    $("#orderCount").textContent = orders.length ? "(" + (shown.length === orders.length ? orders.length : shown.length + " of " + orders.length) + ")" : "";
+    $("#refundCount").textContent = refunds.length ? "(" + refunds.length + ")" : "";
+    if (!booted) {
+      ol.append(emptyNote("Loading orders…")); rl.append(emptyNote("Loading…"));
+      return;
+    }
+    if (!(db && uid)) {
+      ol.append(emptyNote("Your orders show here when you open this page signed in. Orders sent from this view are not saved, so keep the summary you copy."));
+      rl.append(emptyNote("No refund requests to show."));
+      return;
+    }
+    if (!orders.length) ol.append(emptyNote(dashReady ? "No orders yet. Pick something from Deals & Offers." : "Loading orders…"));
+    else if (!shown.length) ol.append(emptyNote("No orders match these filters."));
+    shown.forEach(function (o) { ol.append(orderRow(o)); });
+    if (!refunds.length) rl.append(emptyNote(dashReady ? "No refund requests yet." : "Loading…"));
+    refunds.forEach(function (r) { rl.append(refundRow(r)); });
+  }
+  function flatten(snap, key) {
+    var out = [];
+    snap.docs.forEach(function (d) {
+      var data = d.data() || {}, m = data[key] || {};
+      Object.keys(m).forEach(function (k) { out.push(m[k]); });
+    });
+    return out.sort(function (a, b) { return String(b.createdAt || "").localeCompare(String(a.createdAt || "")); });
+  }
+  function watchDash() {
+    var timer = setTimeout(function () { if (!dashReady) setNote("Can't reach the store yet. Showing what has loaded so far."); }, 10000);
+    function seen(s) { if (!s.metadata.fromCache) { dashReady = true; clearTimeout(timer); if (!$("#dashNote").dataset.sticky) setNote(""); } }
+    function fail() { clearTimeout(timer); setNote("Couldn't load orders in this view."); }
+    db.collection("orders").onSnapshot(function (s) { orders = flatten(s, "orders"); seen(s); renderDash(); }, fail);
+    db.collection("refunds").onSnapshot(function (s) { refunds = flatten(s, "refunds"); seen(s); renderDash(); }, fail);
+    db.collection("status").onSnapshot(function (s) {
+      var m = {};
+      s.docs.forEach(function (d) { var v = d.data() || {}; m[d.id] = v.status; });
+      statusMap = m; renderDash();
+    }, fail);
+  }
+
+  function updateWho() {
+    var w = $("#who");
+    if (!booted || STATIC) { w.textContent = ""; return; }
+    w.textContent = canEdit ? (isOwner ? "Owner view, all orders" : "Editor view, all orders") : (uid ? "Showing your orders" : "Not signed in");
+  }
+
+  /* ---------- boot ---------- */
+  refresh();
+  renderDash();
+  route();
+  (async function () {
+    var caps = await Promise.all([getCap("db"), getCap("user")]);
+    db = caps[0];
+    var u = caps[1];
+    if (u) {
+      try { uid = await u.id(); } catch (_) {}
+      try { canEdit = await u.canEdit(); } catch (_) {}
+      try { isOwner = await u.isOwner(); } catch (_) {}
+    }
+    booted = true;
+    if (STATIC ? !CONFIG.formEndpoint : (!db || !uid)) {
+      var msg = "Orders from this view can't be sent automatically. After you submit, you'll get a summary to copy and send to the shop.";
+      ["#sendNote", "#sendNote2"].forEach(function (s) { var n = $(s); n.textContent = msg; n.hidden = false; });
+    }
+    updateWho();
+    route();
+    renderDash();
+    if (db && uid) watchDash();
+  })();
+})();
+</script>
+
+</body>
+</html>
