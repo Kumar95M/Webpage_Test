@@ -91,8 +91,8 @@ a { color: var(--accent); }
 
 /* shell */
 .shell { max-width: 1240px; margin: 0 auto; display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: 24px; align-items: start; }
-.side { position: sticky; top: max(16px, env(safe-area-inset-top, 0px)); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 12px; display: flex; flex-direction: column; gap: 18px; min-width: 0; }
-.brand { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; text-decoration: none; color: var(--ink); letter-spacing: -0.01em; padding: 0 8px; flex-shrink: 0; }
+.side { position: sticky; top: max(16px, env(safe-area-inset-top, 0px)); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 12px; display: flex; flex-direction: column; gap: 18px; min-width: 0; max-height: calc(100vh - 32px); overflow-y: auto; }
+.brand { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; text-decoration: none; color: var(--ink); letter-spacing: -0.01em; padding: 0 8px; flex-shrink: 0; display: flex; align-items: center; gap: 10px; }
 .side nav { display: flex; flex-direction: column; gap: 2px; }
 .side nav a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; color: var(--ink); text-decoration: none; font-weight: 500; }
 .side nav a:hover { background: var(--accent-soft); }
@@ -230,11 +230,24 @@ textarea { resize: vertical; min-height: 84px; }
 .result .summarybox { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 13px; min-height: 0; }
 .actions { display: flex; flex-wrap: wrap; gap: 10px; }
 
+.logo { width: 36px; height: 36px; border-radius: 9px; background: var(--accent); color: var(--accent-ink); display: inline-grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; flex-shrink: 0; overflow: hidden; }
+.logo.img { background: none; }
+.logo img { width: 100%; height: 100%; object-fit: contain; }
+.panel.stack { display: flex; flex-direction: column; gap: 12px; }
+.codebox { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 4px 0; }
+.codebox .ref { font-size: 1.4rem; letter-spacing: 0.06em; background: var(--accent-soft); color: var(--accent); padding: 8px 14px; border-radius: 8px; overflow-wrap: anywhere; }
+.faq { display: flex; flex-direction: column; gap: 8px; }
+.faq details { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 16px; }
+.faq summary { font-weight: 600; cursor: pointer; }
+.faq details p { margin-top: 8px; color: var(--muted); }
+.terms { display: flex; flex-direction: column; gap: 16px; }
+.terms h3 { margin-bottom: 4px; }
+.terms p { color: var(--muted); }
 .foot { border-top: 1px solid var(--line); padding-top: 16px; color: var(--muted); font-size: 13px; display: flex; flex-direction: column; gap: 4px; }
 
 @media (max-width: 900px) {
   .shell { grid-template-columns: minmax(0, 1fr); gap: 16px; }
-  .side { position: static; flex-direction: row; align-items: center; gap: 8px 12px; padding: 8px 10px; }
+  .side { position: static; flex-direction: row; align-items: center; gap: 8px 12px; padding: 8px 10px; max-height: none; overflow-y: visible; }
   .side nav { flex-direction: row; overflow-x: auto; flex: 1; min-width: 0; }
   .side nav a { white-space: nowrap; padding: 8px 12px; }
   .brand { padding: 0 4px; }
@@ -251,12 +264,20 @@ textarea { resize: vertical; min-height: 84px; }
 <body>
 <div class="shell">
   <aside class="side">
-    <a class="brand" href="#offers" id="brand">Offer Desk</a>
+    <a class="brand" href="#offers"><span class="logo" id="logo" aria-hidden="true">M</span><span id="brandName">Offer Desk</span></a>
     <nav aria-label="Pages">
-      <a href="#orders" data-view="orders"><span class="ico" data-icon="package"></span>Orders Dashboard</a>
-      <a href="#offers" data-view="offers"><span class="ico" data-icon="tag"></span>Deals &amp; Offers</a>
-      <a href="#order" data-view="order"><span class="ico" data-icon="bag"></span>Place an Order<span class="count num" id="navCount" hidden></span></a>
+      <a href="#orders" data-view="orders" data-login="1"><span class="ico" data-icon="package"></span>Orders Dashboard</a>
+      <a href="#payments" data-view="payments" data-login="1"><span class="ico" data-icon="wallet"></span>Payment Dashboard</a>
+      <a href="#offers" data-view="offers"><span class="ico" data-icon="tag"></span>Deal &amp; Offers</a>
+      <a href="#proofs" data-view="proofs"><span class="ico" data-icon="image"></span>Proofs Submit</a>
+      <a href="#referrals" data-view="referrals" data-login="1"><span class="ico" data-icon="users"></span>Referral Earnings</a>
+      <a href="#whatsapp" data-view="whatsapp"><span class="ico" data-icon="chat"></span>Whatsapp Bot</a>
+      <a href="#order" data-view="order"><span class="ico" data-icon="doc"></span>Order Form<span class="count num" id="navCount" hidden></span></a>
       <a href="#refund" data-view="refund"><span class="ico" data-icon="undo"></span>Refund Form</a>
+      <a href="#terms" data-view="terms"><span class="ico" data-icon="file"></span>Terms &amp; Conditions</a>
+      <a href="#qna" data-view="qna"><span class="ico" data-icon="help"></span>QnA</a>
+      <a href="#rewards" data-view="rewards" data-login="1"><span class="ico" data-icon="trend"></span>Rewards</a>
+      <a href="#affiliate" data-view="affiliate"><span class="ico" data-icon="share"></span>Affiliate Program</a>
     </nav>
   </aside>
 
@@ -368,6 +389,11 @@ textarea { resize: vertical; min-height: 84px; }
             <textarea id="o-notes" name="notes" maxlength="400" placeholder="Size, colour, delivery instructions"></textarea>
           </div>
 
+          <div class="field">
+            <label for="o-ref">Referral code <span class="opt">optional</span></label>
+            <input id="o-ref" name="referral" maxlength="30" autocapitalize="characters" autocomplete="off">
+          </div>
+
           <p class="err" id="orderErr" role="alert"></p>
           <div class="submitrow">
             <button class="btn btn-primary" type="submit" id="orderSubmit">Send order</button>
@@ -457,6 +483,134 @@ textarea { resize: vertical; min-height: 84px; }
       </div>
     </section>
 
+    <!-- Payment Dashboard -->
+    <section class="view" id="view-payments" data-view="payments" hidden>
+      <div class="stats" id="payStats"></div>
+      <div class="sec">
+        <h2>Payments <span class="muted num" id="payCount"></span></h2>
+        <div class="rows" id="payList"></div>
+      </div>
+    </section>
+
+    <!-- Proofs Submit -->
+    <section class="view" id="view-proofs" data-view="proofs" hidden>
+      <div id="proofResult" class="result" hidden></div>
+      <div class="desk" id="proofDesk">
+        <form id="proofForm" class="panel">
+          <fieldset>
+            <legend>Your proof</legend>
+            <div class="grid2">
+              <div class="field">
+                <label for="pf-order">Order reference</label>
+                <input id="pf-order" name="orderRef" required maxlength="40" placeholder="ORD-1A2B3C4D" autocapitalize="characters">
+              </div>
+              <div class="field">
+                <label for="pf-type">What are you sharing</label>
+                <select id="pf-type" name="type" required>
+                  <option>Screenshot</option>
+                  <option>Video</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="pf-name">Full name</label>
+                <input id="pf-name" name="name" autocomplete="name" required maxlength="80">
+              </div>
+              <div class="field">
+                <label for="pf-contact">Phone or email</label>
+                <input id="pf-contact" name="contact" required maxlength="120" autocomplete="email">
+              </div>
+              <div class="field wide">
+                <label for="pf-link">Link to the file</label>
+                <input id="pf-link" name="link" type="url" required maxlength="500" placeholder="https://drive.google.com/...">
+              </div>
+              <div class="field wide">
+                <label for="pf-notes">Notes <span class="opt">optional</span></label>
+                <textarea id="pf-notes" name="notes" maxlength="400"></textarea>
+              </div>
+            </div>
+          </fieldset>
+          <p class="err" id="proofErr" role="alert"></p>
+          <div class="submitrow">
+            <button class="btn btn-primary" type="submit" id="proofSubmit">Submit proof</button>
+            <p class="hint" id="sendNote3" hidden></p>
+          </div>
+        </form>
+        <aside class="panel summary" aria-label="How to share a file">
+          <h3>How to share a file</h3>
+          <ul class="tips">
+            <li>Upload the screenshot or video to Google Drive or Google Photos.</li>
+            <li>Set sharing so anyone with the link can view it.</li>
+            <li>Paste that link here, together with your order reference.</li>
+          </ul>
+        </aside>
+      </div>
+      <div class="sec" id="proofListWrap">
+        <h2>Submitted proofs <span class="muted num" id="proofCount"></span></h2>
+        <div class="rows" id="proofList"></div>
+      </div>
+    </section>
+
+    <!-- Referral Earnings -->
+    <section class="view" id="view-referrals" data-view="referrals" hidden>
+      <div class="panel stack">
+        <h3>Your referral code</h3>
+        <div class="codebox">
+          <strong class="ref" id="refCode"></strong>
+          <button class="btn btn-sm" type="button" id="refCopy">Copy code</button>
+        </div>
+        <p class="muted" id="refRule"></p>
+      </div>
+      <div class="sec" id="refAdmin" hidden>
+        <h2>Codes used on orders</h2>
+        <div class="rows" id="refRows"></div>
+      </div>
+    </section>
+
+    <!-- Whatsapp Bot -->
+    <section class="view" id="view-whatsapp" data-view="whatsapp" hidden>
+      <div class="panel stack">
+        <h3>Message the shop on WhatsApp</h3>
+        <p class="muted" id="waText"></p>
+        <div class="field">
+          <label for="wa-order">Order reference <span class="opt">optional</span></label>
+          <input id="wa-order" maxlength="40" placeholder="ORD-1A2B3C4D" autocapitalize="characters">
+        </div>
+        <p><a class="btn btn-primary" id="waLink" href="#" target="_blank" rel="noopener noreferrer" hidden>Open WhatsApp</a></p>
+      </div>
+    </section>
+
+    <!-- Terms and conditions -->
+    <section class="view" id="view-terms" data-view="terms" hidden>
+      <p class="hint">Sample text for learning. Replace it with your own terms before real customers use this page.</p>
+      <div class="panel terms" id="termsBody"></div>
+    </section>
+
+    <!-- QnA -->
+    <section class="view" id="view-qna" data-view="qna" hidden>
+      <div class="faq" id="faqList"></div>
+    </section>
+
+    <!-- Rewards -->
+    <section class="view" id="view-rewards" data-view="rewards" hidden>
+      <div class="stats" id="rewardStats"></div>
+      <div class="panel stack">
+        <h3>How points work</h3>
+        <p class="muted" id="rewardRule"></p>
+        <p class="hint" id="rewardNote"></p>
+      </div>
+    </section>
+
+    <!-- Affiliate Program -->
+    <section class="view" id="view-affiliate" data-view="affiliate" hidden>
+      <div class="panel stack">
+        <h3>Earn by sharing the shop</h3>
+        <p class="muted">Share your referral code with friends. When they use it on an order, you earn a share of that order once it is paid. This is a sample program for learning, the shop decides the real terms.</p>
+        <p><a class="btn btn-primary" href="#referrals" id="affCode">Get your referral code</a></p>
+        <p class="hint">Questions about the program? Use the Whatsapp Bot page to message the shop.</p>
+      </div>
+    </section>
+
     <footer class="foot">
       <p>We never ask for card numbers, passwords or OTPs on this page.</p>
       <p id="contactLine" hidden></p>
@@ -470,7 +624,10 @@ textarea { resize: vertical; min-height: 84px; }
 
   // Edit these blocks to change the shop. Everything else renders from them.
   var CONFIG = { shop: "Offer Desk", cur: "₹", deliveryFee: 49, freeAbove: 999, contact: "",
-    // Static site only: paste your form service address here, for example "https://formspree.io/f/xxxxxxxx".
+    whatsapp: "",          // shop number with country code, digits only, for example 919876543210
+    logoUrl: "",           // address of your logo image; leave empty to show the M mark
+    referralPercent: 5, pointsPer100: 1,
+    // GitHub build only: paste your form service address, for example "https://formspree.io/f/xxxxxxxx"
     // Web3Forms also needs your key: formExtra: { access_key: "your-key" }
     formEndpoint: "", formExtra: {} };
   var PRODUCTS = [
@@ -495,6 +652,11 @@ textarea { resize: vertical; min-height: 84px; }
     refunded: { label: "Refunded", tone: "good" },
     rejected: { label: "Rejected", tone: "bad" }
   };
+  var PROOF_STATUS = {
+    submitted: { label: "Submitted", tone: "warn" },
+    accepted: { label: "Accepted", tone: "good" },
+    rejected: { label: "Rejected", tone: "bad" }
+  };
   var ICONS = {
     package: "M16.5 9.4l-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z M3.27 6.96L12 12.01l8.73-5.05 M12 22.08V12",
     tag: "M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z M7 7h.01",
@@ -502,7 +664,16 @@ textarea { resize: vertical; min-height: 84px; }
     undo: "M1 4v6h6 M3.51 15a9 9 0 1 0 2.13-9.36L1 10",
     clock: "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M12 6v6l4 2",
     check: "M22 11.08V12a10 10 0 1 1-5.93-9.14 M22 4L12 14.01l-3-3",
-    x: "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M15 9l-6 6 M9 9l6 6"
+    x: "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M15 9l-6 6 M9 9l6 6",
+    wallet: "M21 12V7H5a2 2 0 0 1 0-4h14v4 M3 5v14a2 2 0 0 0 2 2h16v-5 M18 12a2 2 0 0 0 0 4h4v-4z",
+    image: "M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z M8.5 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z M21 15l-5-5L5 21",
+    users: "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75",
+    chat: "M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z",
+    doc: "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6 M16 13H8 M16 17H8 M10 9H8",
+    file: "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6 M16 13H8 M16 17H8",
+    help: "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3 M12 17h.01",
+    trend: "M23 6l-9.5 9.5-5-5L1 18 M17 6h6v6",
+    share: "M18 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M6 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M18 22a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M8.59 13.51l6.83 3.98 M15.41 6.51l-6.82 3.98"
   };
   function svg(name, size) {
     return '<svg viewBox="0 0 24 24" width="' + size + '" height="' + size + '" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + ICONS[name] + '"/></svg>';
@@ -544,16 +715,24 @@ textarea { resize: vertical; min-height: 84px; }
 
   /* ---------- who is viewing (set at boot) ---------- */
   var db = null, uid = null, canEdit = false, isOwner = false, booted = false;
-  var STATIC = !(window.claude && window.claude.use);
+  var STATIC = true; // the GitHub build sets this to true
 
   /* ---------- pages: one view per address ---------- */
-  var VIEWS = STATIC ? ["offers", "order", "refund"] : ["orders", "offers", "order", "refund"];
-  if (STATIC) { var dashLink = document.querySelector('nav a[data-view="orders"]'); if (dashLink) dashLink.hidden = true; }
-  var TITLES = { orders: "Orders Dashboard", offers: "Deals & Offers", order: "Place an Order", refund: "Refund Form" };
+  var VIEWS = ["orders", "payments", "offers", "proofs", "referrals", "whatsapp", "order", "refund", "terms", "qna", "rewards", "affiliate"];
+  var LOGIN_VIEWS = ["orders", "payments", "referrals", "rewards"];
+  var TITLES = { orders: "Orders Dashboard", payments: "Payment Dashboard", offers: "Deal & Offers", proofs: "Proofs Submit", referrals: "Referral Earnings", whatsapp: "Whatsapp Bot", order: "Order Form", refund: "Refund Form", terms: "Terms & Conditions", qna: "QnA", rewards: "Rewards", affiliate: "Affiliate Program" };
   var SUBS = {
+    payments: "Amounts paid and still pending for each order.",
     offers: "Prices shown are the offer prices. Add items, then review and send your order.",
+    proofs: "Share a link to a screenshot or video for an order.",
+    referrals: "Share your code and see which orders used it.",
+    whatsapp: "Message the shop for updates or help.",
     order: "Fill in your delivery details. Nothing is charged on this page.",
-    refund: "Tell us what went wrong with an order."
+    refund: "Tell us what went wrong with an order.",
+    terms: "Please read these before you order.",
+    qna: "Quick answers to common questions.",
+    rewards: "Points you earn on paid orders.",
+    affiliate: "Earn by sharing the shop."
   };
   function subFor(name) {
     if (name !== "orders") return SUBS[name];
@@ -562,7 +741,7 @@ textarea { resize: vertical; min-height: 84px; }
   }
   var currentView = "offers";
   function showView(name) {
-    if (VIEWS.indexOf(name) < 0) name = "offers";
+    if (VIEWS.indexOf(name) < 0 || (STATIC && LOGIN_VIEWS.indexOf(name) >= 0)) name = "offers";
     currentView = name;
     document.querySelectorAll(".view").forEach(function (s) { s.hidden = s.dataset.view !== name; });
     document.querySelectorAll("nav a[data-view]").forEach(function (a) {
@@ -571,13 +750,19 @@ textarea { resize: vertical; min-height: 84px; }
     });
     $("#viewTitle").textContent = TITLES[name];
     $("#viewSub").textContent = subFor(name);
+    renderPage(name);
     window.scrollTo(0, 0);
   }
   function route() { showView(location.hash.slice(1)); }
   addEventListener("hashchange", route);
 
   /* ---------- header, facts ---------- */
-  $("#brand").textContent = CONFIG.shop;
+  $("#brandName").textContent = CONFIG.shop;
+  if (CONFIG.logoUrl) {
+    var lg = $("#logo"); lg.textContent = ""; lg.classList.add("img");
+    var im = document.createElement("img"); im.src = CONFIG.logoUrl; im.alt = ""; lg.append(im);
+  }
+  document.querySelectorAll("nav a[data-login]").forEach(function (a) { a.hidden = STATIC; });
   var ends = PRODUCTS.map(function (p) { return p.until; }).sort();
   [
     "Free delivery on orders of " + inr(CONFIG.freeAbove) + " or more",
@@ -708,12 +893,12 @@ textarea { resize: vertical; min-height: 84px; }
   async function save(kind, rec, summary) {
     if (STATIC) {
       if (!CONFIG.formEndpoint) throw { code: "no_endpoint" };
-      var isOrder = kind === "orders";
+      var LABEL = { orders: "order", refunds: "refund request", proofs: "proof" };
       var contact = rec.contact || "";
-      var subject = "New " + (isOrder ? "order " : "refund request ") + rec.ref;
+      var subject = "New " + LABEL[kind] + " " + rec.ref;
       var payload = Object.assign({}, CONFIG.formExtra, {
         reference: rec.ref,
-        type: isOrder ? "Order" : "Refund request",
+        type: LABEL[kind],
         subject: subject,
         _subject: subject,
         name: rec.name,
@@ -779,6 +964,7 @@ textarea { resize: vertical; min-height: 84px; }
       email: String(f.get("email") || "").trim(), address: String(f.get("address") || "").trim(),
       pin: String(f.get("pin") || "").trim(), payment: String(f.get("payment") || "cod"),
       notes: String(f.get("notes") || "").trim(),
+      referral: String(f.get("referral") || "").trim().toUpperCase(), by: uid || "",
       items: PRODUCTS.filter(function (p) { return qty[p.id] > 0; }).map(function (p) { return { id: p.id, name: p.name, qty: qty[p.id], price: p.price }; }),
       total: t.total, delivery: t.delivery
     };
@@ -790,7 +976,7 @@ textarea { resize: vertical; min-height: 84px; }
       "Items: " + lineItems(rec.items).join("; "),
       "Delivery: " + (rec.delivery ? inr(rec.delivery) : "Free"),
       "Total: " + inr(rec.total),
-      "Payment: " + PAY[rec.payment] + (rec.notes ? "\nNotes: " + rec.notes : "")
+      "Payment: " + PAY[rec.payment] + (rec.referral ? "\nReferral code: " + rec.referral : "") + (rec.notes ? "\nNotes: " + rec.notes : "")
     ].join("\n");
     var btn = $("#orderSubmit"); btn.disabled = true; btn.textContent = "Sending…";
     var ok = true;
@@ -999,6 +1185,7 @@ textarea { resize: vertical; min-height: 84px; }
 
   function renderDash() {
     renderStats();
+    renderPayments(); renderRewards(); renderReferrals(); renderProofList();
     var ol = $("#orderList"), rl = $("#refundList");
     ol.textContent = ""; rl.textContent = "";
     FILTERS.forEach(function (f) {
@@ -1041,11 +1228,258 @@ textarea { resize: vertical; min-height: 84px; }
     function fail() { clearTimeout(timer); setNote("Couldn't load orders in this view."); }
     db.collection("orders").onSnapshot(function (s) { orders = flatten(s, "orders"); seen(s); renderDash(); }, fail);
     db.collection("refunds").onSnapshot(function (s) { refunds = flatten(s, "refunds"); seen(s); renderDash(); }, fail);
+    db.collection("proofs").onSnapshot(function (s) { proofs = flatten(s, "proofs"); seen(s); renderDash(); }, fail);
     db.collection("status").onSnapshot(function (s) {
       var m = {};
       s.docs.forEach(function (d) { var v = d.data() || {}; m[d.id] = v.status; });
       statusMap = m; renderDash();
     }, fail);
+  }
+
+  /* ---------- extra pages ---------- */
+  var proofs = [];
+  var PROOF_URL = /^https?:\/\//i;
+  var TERMS = [
+    ["Orders", "An order is confirmed only after the shop contacts you. The shop may cancel an order if an item is unavailable."],
+    ["Prices and offers", "Offer prices apply until the end date shown on each offer. The total shown in your order summary is the price for that order."],
+    ["Payment", "Nothing is charged on this website. You pay on delivery, or by UPI or bank transfer after the shop confirms your order."],
+    ["Delivery", "The delivery fee and the free delivery limit are shown in your order summary."],
+    ["Refunds and replacements", "Use the Refund Form with your order reference. Each request is reviewed individually."],
+    ["Your details", "Your name, phone and address are used only to process your order and any refund request."]
+  ];
+  function drawStats(box, cards) {
+    box.textContent = "";
+    cards.forEach(function (c) {
+      var card = el("div", "stat");
+      var tile = el("span", "tile " + c[3]);
+      if (c[0] && c[0].indexOf("text:") === 0) tile.textContent = c[0].slice(5);
+      else if (c[0]) tile.innerHTML = svg(c[0], 20);
+      else tile.textContent = CONFIG.cur;
+      var txt = el("div");
+      txt.append(el("div", "k", c[1]), el("div", "v", c[2]));
+      card.append(tile, txt);
+      box.append(card);
+    });
+  }
+  function gateMsg(box) {
+    box.textContent = "";
+    if (!booted) { box.append(emptyNote("Loading…")); return true; }
+    if (!(db && uid)) { box.append(emptyNote("This page shows your own data when you open it signed in. It stays empty in this view.")); return true; }
+    return false;
+  }
+  function payState(o) {
+    var s = orderStatus(o);
+    if (s === "cancelled") return { label: "Cancelled", tone: "bad", paid: false, cancelled: true };
+    if (s === "paid" || s === "delivered") return { label: "Paid", tone: "good", paid: true, cancelled: false };
+    return { label: "Pending", tone: "warn", paid: false, cancelled: false };
+  }
+
+  function renderPayments() {
+    var stats = $("#payStats"), box = $("#payList");
+    var total = 0, paid = 0, pending = 0, cod = 0;
+    orders.forEach(function (o) {
+      var p = payState(o), t = o.total || 0;
+      if (p.cancelled) return;
+      total += t;
+      if (p.paid) paid += t; else { pending += t; if (o.payment === "cod") cod += t; }
+    });
+    drawStats(stats, [
+      [null, "Total amount", inr(total), "info"],
+      ["check", "Paid", inr(paid), "good"],
+      ["clock", "Awaiting payment", inr(pending), "warn"],
+      ["bag", "Pay on delivery", inr(cod), "info"]
+    ]);
+    $("#payCount").textContent = orders.length ? "(" + orders.length + ")" : "";
+    if (gateMsg(box)) return;
+    if (!orders.length) { box.append(emptyNote(dashReady ? "No orders yet, so no payments to show." : "Loading…")); return; }
+    orders.forEach(function (o) {
+      var p = payState(o);
+      var row = el("article", "row");
+      var top = el("div", "otop"), id = el("div", "oid");
+      id.append(el("strong", "ref", o.ref), el("span", "muted small", when(o.createdAt)));
+      top.append(id, pill(p));
+      row.append(top, el("p", "small muted", "Method: " + (PAY[o.payment] || o.payment || "")));
+      var bot = el("div", "obot");
+      bot.append(el("span", "amt", inr(o.total || 0)));
+      if (isOwner && db && !p.paid && !p.cancelled) {
+        var b = el("button", "btn btn-sm", "Mark paid"); b.type = "button";
+        b.addEventListener("click", function () { setStatus(o.ref, "paid", "order", b, ""); });
+        bot.append(b);
+      }
+      row.append(bot);
+      box.append(row);
+    });
+  }
+
+  function renderRewards() {
+    var mine = canEdit ? orders.filter(function (o) { return uid && o.by === uid; }) : orders;
+    var paidTotal = 0, paidCount = 0;
+    mine.forEach(function (o) { var p = payState(o); if (p.paid) { paidTotal += o.total || 0; paidCount++; } });
+    var points = Math.floor(paidTotal / 100 * CONFIG.pointsPer100);
+    drawStats($("#rewardStats"), [
+      ["text:P", "Points earned", String(points), "good"],
+      ["check", "Paid orders", String(paidCount), "info"],
+      [null, "Paid amount", inr(paidTotal), "info"]
+    ]);
+    $("#rewardRule").textContent = "You earn " + CONFIG.pointsPer100 + (CONFIG.pointsPer100 === 1 ? " point" : " points") + " for every " + inr(100) + " of paid orders. This is a sample rule for learning. The shop decides how points can be used.";
+    $("#rewardNote").textContent = (booted && !(db && uid)) ? "Open this page signed in to see your points." : (canEdit ? "Shows points for orders you placed yourself." : "");
+  }
+
+  function myCode() {
+    if (!uid) return "";
+    var h = 0;
+    for (var i = 0; i < uid.length; i++) h = (h * 31 + uid.charCodeAt(i)) >>> 0;
+    return "R" + h.toString(36).toUpperCase().padStart(7, "0").slice(-7);
+  }
+  $("#refCopy").addEventListener("click", async function () {
+    var b = this;
+    try { await navigator.clipboard.writeText(myCode()); b.textContent = "Copied"; }
+    catch (_) { b.textContent = "Select the code and copy it"; }
+  });
+  function renderReferrals() {
+    var code = myCode();
+    $("#refCode").textContent = code || "Open this page signed in to get your code";
+    $("#refCopy").hidden = !code;
+    $("#refRule").textContent = "When someone enters your code on the Order Form and that order is paid, the shop records " + CONFIG.referralPercent + "% of the paid amount as your earnings. This is a sample rate for learning. The shop sets the real rate and records any payout.";
+    var admin = $("#refAdmin"), rows = $("#refRows");
+    admin.hidden = !canEdit;
+    rows.textContent = "";
+    if (!canEdit) return;
+    var map = {};
+    orders.forEach(function (o) {
+      if (!o.referral) return;
+      var m = map[o.referral] || (map[o.referral] = { orders: 0, paid: 0 });
+      m.orders++;
+      if (payState(o).paid) m.paid += o.total || 0;
+    });
+    var codes = Object.keys(map).sort(function (a, b) { return map[b].orders - map[a].orders; });
+    if (!codes.length) { rows.append(emptyNote("No order has used a referral code yet.")); return; }
+    codes.forEach(function (c) {
+      var m = map[c], row = el("article", "row");
+      var top = el("div", "otop");
+      top.append(el("strong", "ref", c), el("span", "muted small", m.orders + (m.orders === 1 ? " order" : " orders")));
+      var bot = el("div", "obot");
+      bot.append(el("span", "small muted", "Paid amount " + inr(m.paid)), el("span", "amt", inr(m.paid * CONFIG.referralPercent / 100)));
+      row.append(top, bot);
+      rows.append(row);
+    });
+  }
+
+  /* proofs */
+  $("#proofForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    $("#proofErr").textContent = "";
+    var f = new FormData(e.target);
+    var link = String(f.get("link") || "").trim();
+    if (!PROOF_URL.test(link)) { $("#proofErr").textContent = "Paste a link that starts with http:// or https://"; return; }
+    var rec = {
+      ref: makeRef("PRF"), createdAt: new Date().toISOString(),
+      orderRef: String(f.get("orderRef") || "").trim().toUpperCase(),
+      name: String(f.get("name") || "").trim(), contact: String(f.get("contact") || "").trim(),
+      type: String(f.get("type") || ""), link: link, notes: String(f.get("notes") || "").trim(), by: uid || ""
+    };
+    var summary = [
+      "Proof " + rec.ref,
+      "Order: " + rec.orderRef,
+      "Name: " + rec.name + "  Contact: " + rec.contact,
+      "Type: " + rec.type,
+      "Link: " + rec.link,
+      rec.notes ? "Notes: " + rec.notes : ""
+    ].filter(Boolean).join("\n");
+    var btn = $("#proofSubmit"); btn.disabled = true; btn.textContent = "Sending…";
+    var ok = true;
+    try { await save("proofs", rec, summary); } catch (_) { ok = false; }
+    btn.disabled = false; btn.textContent = "Submit proof";
+    if (ok) {
+      showResult($("#proofResult"), $("#proofDesk"), true, "Proof received",
+        ["Your reference is " + rec.ref + " for order " + rec.orderRef + "."], summary, "Submit another proof");
+      e.target.reset();
+    } else {
+      showResult($("#proofResult"), $("#proofDesk"), false, "Not sent yet",
+        ["This view could not send the proof to the shop. Copy the details below and message them to the shop with reference " + rec.ref + "."], summary, "Back to the form");
+    }
+  });
+  function renderProofList() {
+    var wrap = $("#proofListWrap");
+    if (STATIC) { wrap.hidden = true; return; }
+    var box = $("#proofList");
+    $("#proofCount").textContent = proofs.length ? "(" + proofs.length + ")" : "";
+    if (gateMsg(box)) return;
+    if (!proofs.length) { box.append(emptyNote(dashReady ? "No proofs submitted yet." : "Loading…")); return; }
+    proofs.forEach(function (p) {
+      var st = PROOF_STATUS[statusMap[p.ref]] ? statusMap[p.ref] : "submitted";
+      var row = el("article", "row");
+      var top = el("div", "otop"), id = el("div", "oid");
+      id.append(el("strong", "ref", p.ref), el("span", "muted small", when(p.createdAt)));
+      top.append(id, pill(PROOF_STATUS[st]));
+      row.append(top, el("p", null, "Order " + (p.orderRef || "") + " · " + (p.type || "")));
+      if (canEdit) row.append(el("p", null, [p.name, p.contact].filter(Boolean).join(" · ")));
+      if (PROOF_URL.test(p.link || "")) {
+        var a = el("a", null, p.link); a.href = p.link; a.target = "_blank"; a.rel = "noopener noreferrer";
+        row.append(a);
+      }
+      if (p.notes) row.append(el("p", "small muted", p.notes));
+      if (isOwner && db) {
+        var bot = el("div", "obot");
+        bot.append(el("span"));
+        bot.append(statusSelect(PROOF_STATUS, st, function (sel) { setStatus(p.ref, sel.value, "proof", sel, st); }));
+        row.append(bot);
+      }
+      box.append(row);
+    });
+  }
+
+  /* whatsapp */
+  function waLink() {
+    var num = String(CONFIG.whatsapp || "").replace(/\D/g, "");
+    var ref = $("#wa-order").value.trim();
+    var msg = "Hello, I need help" + (ref ? " with order " + ref : "") + ".";
+    return num ? "https://wa.me/" + num + "?text=" + encodeURIComponent(msg) : "";
+  }
+  function updateWa() {
+    var a = $("#waLink"), link = waLink();
+    a.hidden = !link;
+    if (link) a.href = link;
+    $("#waText").textContent = link
+      ? "Open a WhatsApp chat with the shop. Add your order reference to include it in the message. Automatic bot replies are not set up, the shop answers by hand."
+      : "The shop has not added a WhatsApp number yet.";
+  }
+  $("#wa-order").addEventListener("input", updateWa);
+
+  /* terms, QnA, affiliate */
+  function renderTerms() {
+    var box = $("#termsBody");
+    if (box.dataset.done) return;
+    box.dataset.done = "1";
+    TERMS.forEach(function (t) {
+      var d = el("div");
+      d.append(el("h3", null, t[0]), el("p", null, t[1]));
+      box.append(d);
+    });
+  }
+  function renderFaq() {
+    var box = $("#faqList");
+    if (box.dataset.done) return;
+    box.dataset.done = "1";
+    var items = [
+      ["How do I place an order?", "Add items from Deal & Offers, then fill in the Order Form and send it."],
+      ["Do I pay on this website?", "No. Nothing is charged here. You pay on delivery, or by UPI or bank transfer after the shop confirms your order."],
+      ["How do I ask for a refund?", "Use the Refund Form and enter the order reference you received when you ordered."],
+      ["What can I send as proof?", "Use Proofs Submit to share a link to a screenshot or video, together with your order reference."],
+      ["I lost my order reference. What now?", "Look for the summary you copied or the confirmation shown after ordering. If you cannot find it, message the shop."]
+    ];
+    if (!STATIC) items.splice(2, 0, ["How do I follow my order?", "Open Orders Dashboard while signed in to see its current status."]);
+    items.forEach(function (q) {
+      var d = el("details");
+      d.append(el("summary", null, q[0]), el("p", null, q[1]));
+      box.append(d);
+    });
+  }
+  function renderPage(name) {
+    if (name === "terms") renderTerms();
+    else if (name === "qna") renderFaq();
+    else if (name === "whatsapp") updateWa();
+    else if (name === "affiliate") $("#affCode").hidden = STATIC;
   }
 
   function updateWho() {
@@ -1070,7 +1504,7 @@ textarea { resize: vertical; min-height: 84px; }
     booted = true;
     if (STATIC ? !CONFIG.formEndpoint : (!db || !uid)) {
       var msg = "Orders from this view can't be sent automatically. After you submit, you'll get a summary to copy and send to the shop.";
-      ["#sendNote", "#sendNote2"].forEach(function (s) { var n = $(s); n.textContent = msg; n.hidden = false; });
+      ["#sendNote", "#sendNote2", "#sendNote3"].forEach(function (s) { var n = $(s); n.textContent = msg; n.hidden = false; });
     }
     updateWho();
     route();
