@@ -10,7 +10,9 @@
     // Web3Forms also needs your key: formExtra: { access_key: "your-key" }
     formEndpoint: "", formExtra: {},
     // GitHub build only: address of your published Google Sheet (CSV) that lists the offers; leave empty to show the sample offers
-    offersCsvUrl: "" };
+    offersCsvUrl: "",
+    // colour theme: "sunset", "ocean", "berry", "jungle" or "classic" (visitors can also pick from the dots in the menu)
+    theme: "sunset" };
   var SAMPLE_OFFERS = [
     { id: "tee", name: "Everyday Cotton Tee, pack of 2", note: "Soft combed cotton. Mention your size in the order notes.", mrp: 799, price: 549, until: "2026-11-30" },
     { id: "bottle", name: "Steel Bottle, 750 ml", note: "Double-wall insulated bottle with a leak-proof lid.", mrp: 1199, price: 899, until: "2026-11-30" },
@@ -142,6 +144,30 @@
   var PAGE = document.body.getAttribute("data-page") || "offers";
   function route() { showView(PAGE); }
   addEventListener("hashchange", route);
+
+  /* ---------- colour theme picker ---------- */
+  (function () {
+    var PAL = [{"id":"sunset","g1":"#D8421A","g2":"#A8135A"},{"id":"ocean","g1":"#0757B8","g2":"#0A7C8C"},{"id":"berry","g1":"#6A22B0","g2":"#C2185B"},{"id":"jungle","g1":"#0E7A3E","g2":"#0B6E8A"},{"id":"classic","g1":"#0E5A4A","g2":"#0E5A4A"}];
+    var cur = CONFIG.theme;
+    try { var sv = localStorage.getItem("offerdesk-palette"); if (sv) cur = sv; } catch (_) {}
+    if (!PAL.some(function (p) { return p.id === cur; })) cur = "classic";
+    function apply(id) {
+      document.documentElement.setAttribute("data-palette", id);
+      document.querySelectorAll(".themes button").forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.id === id ? "true" : "false"); });
+    }
+    document.documentElement.setAttribute("data-palette", cur);
+    var box = document.createElement("div"); box.className = "themes";
+    var lab = document.createElement("span"); lab.textContent = "Theme"; box.append(lab);
+    PAL.forEach(function (p) {
+      var b = document.createElement("button"); b.type = "button"; b.dataset.id = p.id;
+      b.setAttribute("aria-label", p.id + " theme"); b.title = p.id;
+      b.style.background = "linear-gradient(135deg," + p.g1 + "," + p.g2 + ")";
+      b.addEventListener("click", function () { apply(p.id); try { localStorage.setItem("offerdesk-palette", p.id); } catch (_) {} });
+      box.append(b);
+    });
+    var side = document.querySelector(".side"); if (side) side.append(box);
+    apply(cur);
+  })();
 
   /* ---------- header, facts ---------- */
   $("#brandName").textContent = CONFIG.shop;
